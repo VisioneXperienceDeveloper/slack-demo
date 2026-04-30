@@ -16,6 +16,7 @@ import type { Message } from './domain/models';
 import ChatHeader from './components/ChatHeader';
 import MessageList from './components/MessageList';
 import MessageInput from './components/MessageInput';
+import ThreadPanel from './components/ThreadPanel';
 import styles from './ChatView.module.css';
 
 interface ChatViewProps {
@@ -35,7 +36,10 @@ export default function ChatView({ workspaceId, channelId }: ChatViewProps) {
   );
   
   const sendMessage = useMutation(api.messages.send);
+  const toggleReaction = useMutation(api.reactions.toggle);
+  
   const [isSending, setIsSending] = useState(false);
+  const [selectedThreadId, setSelectedThreadId] = useState<string | null>(null);
 
   // ─── Send Message ─────────────────────────────────────
 
@@ -56,6 +60,24 @@ export default function ChatView({ workspaceId, channelId }: ChatViewProps) {
     },
     [workspaceId, channelId, channel, currentUser, isSending, sendMessage],
   );
+
+  const handleReact = useCallback(
+    async (messageId: string, emoji: string) => {
+      try {
+        await toggleReaction({
+          messageId: messageId as Id<"messages">,
+          emoji,
+        });
+      } catch (error) {
+        console.error("Failed to toggle reaction:", error);
+      }
+    },
+    [toggleReaction]
+  );
+
+  const handleThreadClick = useCallback((messageId: string) => {
+    setSelectedThreadId(messageId);
+  }, []);
 
   // ─── Render ───────────────────────────────────────────
 
@@ -91,11 +113,14 @@ export default function ChatView({ workspaceId, channelId }: ChatViewProps) {
     content: msg.body,
     timestamp: new Date(msg._creationTime),
     isEdited: !!msg.updatedAt,
-    reactions: [], // Not implemented in schema yet
+    reactions: msg.reactions || [],
+    threadCount: msg.threadCount || 0,
+    parentMessageId: msg.parentMessageId,
+    image: msg.image,
   })).reverse(); // Paginated query returns desc, we want asc for display
 
   return (
-    <div className={styles.layout} style={{ gridTemplateColumns: '1fr' }}>
+    <div className={styles.layout} style={{ gridTemplateColumns: selectedThreadId ? '1fr 380px' : '1fr' }}>
       <main className={styles.main}>
         <ChatHeader channel={{
           id: channel._id,
@@ -106,13 +131,27 @@ export default function ChatView({ workspaceId, channelId }: ChatViewProps) {
           memberCount: 0,
           createdAt: new Date(channel.createdAt)
         }} />
-        <MessageList messages={mappedMessages} isLoading={status === "LoadingFirstPage"} />
+        <MessageList 
+          messages={mappedMessages} 
+          isLoading={status === "LoadingFirstPage"} 
+          onReact={handleReact}
+          onThreadClick={handleThreadClick}
+        />
         <MessageInput
           channelName={channel.name}
           onSend={handleSendMessage}
           disabled={isSending}
         />
       </main>
+      
+      {selectedThreadId && (
+        <ThreadPanel 
+          workspaceId={workspaceId}
+          channelId={channelId}
+          parentMessageId={selectedThreadId}
+          onClose={() => setSelectedThreadId(null)}
+        />
+      )}
     </div>
   );
 }

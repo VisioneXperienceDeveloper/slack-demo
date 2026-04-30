@@ -5,13 +5,20 @@
  * timestamp, content, reactions, and thread indicator.
  */
 
+'use client';
+
+import { useState, useRef } from 'react';
 import type { Message } from '@/features/chat/domain/models';
 import Avatar from '@/shared/components/Avatar';
+import MarkdownText from '@/shared/components/MarkdownText';
+import EmojiPicker from './EmojiPicker';
 import styles from './MessageBubble.module.css';
 
 interface MessageBubbleProps {
   message: Message;
   isCompact?: boolean; // Consecutive messages from same author
+  onReact?: (messageId: string, emoji: string) => void;
+  onThreadClick?: (messageId: string) => void;
 }
 
 function formatTime(date: Date): string {
@@ -34,7 +41,32 @@ function formatRelativeTime(date: Date): string {
   return formatTime(date);
 }
 
-export default function MessageBubble({ message, isCompact = false }: MessageBubbleProps) {
+export default function MessageBubble({ 
+  message, 
+  isCompact = false,
+  onReact,
+  onThreadClick
+}: MessageBubbleProps) {
+  const [pickerPosition, setPickerPosition] = useState<{ top: number; left: number } | null>(null);
+  const reactBtnRef = useRef<HTMLButtonElement>(null);
+
+  const handleReactClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (pickerPosition) {
+      setPickerPosition(null);
+    } else {
+      const rect = reactBtnRef.current?.getBoundingClientRect();
+      if (rect) {
+        setPickerPosition({ top: rect.bottom + 8, left: rect.left - 100 });
+      }
+    }
+  };
+
+  const handleEmojiSelect = (emoji: string) => {
+    onReact?.(message.id, emoji);
+    setPickerPosition(null);
+  };
+
   return (
     <div className={`${styles.message} ${isCompact ? styles.compact : ''}`}>
       {!isCompact ? (
@@ -60,13 +92,18 @@ export default function MessageBubble({ message, isCompact = false }: MessageBub
           </div>
         )}
 
-        <p className={styles.text}>{message.content}</p>
+        <MarkdownText text={message.content} />
 
         {/* Reactions */}
         {message.reactions.length > 0 && (
           <div className={styles.reactions}>
             {message.reactions.map((reaction, i) => (
-              <button key={i} className={styles.reaction}>
+              <button 
+                key={i} 
+                className={`${styles.reaction} ${reaction.userIds?.includes('current-user') ? styles.reactionActive : ''}`}
+                onClick={() => onReact?.(message.id, reaction.emoji)}
+                type="button"
+              >
                 <span className={styles.emoji}>{reaction.emoji}</span>
                 <span className={styles.reactionCount}>{reaction.count}</span>
               </button>
@@ -76,7 +113,7 @@ export default function MessageBubble({ message, isCompact = false }: MessageBub
 
         {/* Thread indicator */}
         {message.threadCount && message.threadCount > 0 && (
-          <button className={styles.thread}>
+          <button className={styles.thread} onClick={() => onThreadClick?.(message.id)} type="button">
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
               <path
                 d="M2 3H12M2 7H8M2 11H10"
@@ -92,7 +129,13 @@ export default function MessageBubble({ message, isCompact = false }: MessageBub
 
       {/* Hover actions */}
       <div className={styles.hoverActions}>
-        <button className={styles.hoverBtn} title="React">
+        <button 
+          className={styles.hoverBtn} 
+          title="React" 
+          onClick={handleReactClick}
+          ref={reactBtnRef}
+          type="button"
+        >
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
             <circle cx="7" cy="7" r="5.5" stroke="currentColor" strokeWidth="1" />
             <circle cx="5.5" cy="6" r="0.7" fill="currentColor" />
@@ -100,7 +143,12 @@ export default function MessageBubble({ message, isCompact = false }: MessageBub
             <path d="M5 9C5.5 9.8 6.2 10 7 10C7.8 10 8.5 9.8 9 9" stroke="currentColor" strokeWidth="1" strokeLinecap="round" />
           </svg>
         </button>
-        <button className={styles.hoverBtn} title="Reply in thread">
+        <button 
+          className={styles.hoverBtn} 
+          title="Reply in thread"
+          onClick={() => onThreadClick?.(message.id)}
+          type="button"
+        >
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
             <path
               d="M2 3H12M2 7H8M2 11H10"
@@ -110,7 +158,7 @@ export default function MessageBubble({ message, isCompact = false }: MessageBub
             />
           </svg>
         </button>
-        <button className={styles.hoverBtn} title="More actions">
+        <button className={styles.hoverBtn} title="More actions" type="button">
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
             <circle cx="3" cy="7" r="1" fill="currentColor" />
             <circle cx="7" cy="7" r="1" fill="currentColor" />
@@ -118,6 +166,14 @@ export default function MessageBubble({ message, isCompact = false }: MessageBub
           </svg>
         </button>
       </div>
+
+      {pickerPosition && (
+        <EmojiPicker 
+          onSelect={handleEmojiSelect} 
+          onClose={() => setPickerPosition(null)} 
+          position={pickerPosition} 
+        />
+      )}
     </div>
   );
 }

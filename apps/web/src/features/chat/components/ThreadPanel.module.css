@@ -1,0 +1,101 @@
+.panel {
+  background-color: var(--bg-primary, #1A1D21);
+  border-left: 1px solid var(--border-subtle, rgba(255, 255, 255, 0.1));
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.header {
+  height: 60px;
+  min-height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  border-bottom: 1px solid var(--border-subtle, rgba(255, 255, 255, 0.1));
+}
+
+.headerTitle {
+  display: flex;
+  flex-direction: column;
+}
+
+.headerTitle h2 {
+  font-size: 16px;
+  font-weight: 700;
+  margin: 0;
+}
+
+.channelName {
+  font-size: 13px;
+  color: var(--text-secondary, rgba(255, 255, 255, 0.7));
+}
+
+.closeBtn {
+  background: none;
+  border: none;
+  color: var(--text-secondary, rgba(255, 255, 255, 0.7));
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s;
+}
+
+.closeBtn:hover {
+  background-color: var(--bg-tertiary, rgba(255, 255, 255, 0.1));
+  color: var(--text-primary, #ffffff);
+}
+
+.content {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.parentMessage {
+  padding: 16px 0;
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  margin: 8px 0 16px 0;
+}
+
+.dividerCount {
+  font-size: 13px;
+  color: var(--text-secondary, rgba(255, 255, 255, 0.7));
+  margin-right: 12px;
+  white-space: nowrap;
+}
+
+.dividerLine {
+  flex: 1;
+  height: 1px;
+  background-color: var(--border-subtle, rgba(255, 255, 255, 0.1));
+}
+
+.replies {
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 16px;
+}
+
+.inputWrapper {
+  padding: 16px;
+  border-top: 1px solid var(--border-subtle, rgba(255, 255, 255, 0.1));
+}
+
+.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  color: var(--text-secondary, rgba(255, 255, 255, 0.7));
+}

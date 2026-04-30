@@ -1,28 +1,40 @@
 # Architecture Overview
 
-This project implements a **Vertical Slice Architecture**. Instead of traditional horizontal layers, the codebase is split into "slices" that contain everything needed for a specific feature.
+The project has evolved into a **Turborepo monorepo**, separating the application logic into distinct workspaces for better scalability and code reuse.
 
-## Directory Structure
+## Monorepo Structure
 
 ```text
-src/
-├── app/              # Routing, Layouts, and Pages (Next.js App Router)
-├── features/         # Feature-specific code (The "Slices")
-│   └── chat/         # Chat feature slice
-│       ├── components/ # Feature-specific UI components
-│       ├── domain/     # Business logic and types
-│       ├── services/   # Data fetching and external API calls
-│       ├── ChatView.tsx # Main entry point for the feature
-│       └── index.ts    # Public API for the feature
-├── shared/           # Cross-cutting concerns
-│   ├── components/   # Common UI components (buttons, inputs, etc.)
-│   ├── types/        # Global TypeScript interfaces
-│   └── hooks/        # Shared React hooks
+.
+├── apps/
+│   └── web/            # Next.js 16 Web Application
+├── convex/             # Backend logic (Schema, Mutations, Queries)
+├── packages/
+│   └── auth/           # Shared Authentication logic (Clerk + Convex)
+├── docs/               # Project Documentation
+└── turbo.json          # Turborepo configuration
 ```
 
-## Key Principles
+## Core Components
 
-1. **Feature Encapsulation**: Each feature should be as self-contained as possible.
-2. **Shared Foundation**: Common UI elements and utilities reside in `shared/`.
-3. **Public API**: Features should export only what's necessary via `index.ts`.
-4. **App Router Integration**: Next.js pages in `app/` act as orchestrators, importing views from `features/`.
+### 1. Frontend (`apps/web`)
+- Built with **Next.js 16 App Router**.
+- **Vertical Slice Architecture** is maintained within the `src` directory:
+  - `src/app`: Routing and layouts.
+  - `src/features`: Feature-specific logic (e.g., workspaces, chat).
+  - `src/shared`: Common components and utilities.
+
+### 2. Backend (`convex/`)
+- Handles all data persistence and real-time updates.
+- **Schema-driven**: Defined in `convex/schema.ts`.
+- **Serverless**: Business logic resides in query and mutation functions.
+
+### 3. Authentication (`packages/auth`)
+- Integrates **Clerk** for user identity and **Convex Auth** for database authorization.
+- Provides a unified `AuthProvider` used by the web app.
+
+## Data Flow
+1. **User Action**: Triggered in the React frontend (`apps/web`).
+2. **Convex Hook**: Frontend calls a mutation or query using `useMutation` or `useQuery`.
+3. **Serverless Logic**: Convex executes the function, validating against the schema.
+4. **Real-time Sync**: Changes are automatically pushed to all subscribed clients instantly.

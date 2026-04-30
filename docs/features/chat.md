@@ -1,30 +1,28 @@
 # Chat Feature
 
-The Chat feature is the core functional block of the Slack Clone. It provides a real-time (mocked) messaging interface.
+The Chat feature is the core functional block of the Slack Clone. It provides a full-featured, real-time messaging experience.
 
 ## Components
 
-- **ChatView**: The main container that integrates the message list and message input.
-- **MessageList**: Displays the history of messages in a channel.
-- **MessageInput**: Handles new message composition and submission.
+- **ChatView**: The main container that orchestrates the message flow and channel context.
+- **MessageList**: A real-time updating list of messages. Uses Convex `useQuery` for automatic synchronization.
+- **MessageInput**: A sophisticated input component for composing and sending messages via Convex mutations.
 
-## Domain Models (`domain/models.ts`)
+## Backend Integration (`convex/messages.ts`)
 
-Defines the core entities:
-- `Message`: Represents a single chat message (ID, content, author, timestamp).
-- `User`: Represents a user in the system.
-- `Channel`: Represents a chat channel or workspace.
+Instead of mock services, the chat feature now uses Convex for real-time data persistence:
+- **Queries**: `messages.get` - Fetches messages for a specific channel with optimized indexes.
+- **Mutations**: `messages.send` - Handles message creation and broadcasts it to all connected clients.
 
-## Services
+## Real-time Sync
 
-- **ChatService**: Abstract interface for chat operations.
-- **MockChatService**: A robust mock implementation that provides:
-  - Simulated message history.
-  - Mocked user interactions.
-  - Asynchronous behavior simulation to mimic real network latency.
+The Chat feature leverages Convex's subscription model:
+1. When a user sends a message, a mutation is called.
+2. Convex updates the `messages` table atomically.
+3. All clients currently viewing that channel automatically receive the new message through their active query hooks.
 
 ## Implementation Details
 
-- **State Management**: Uses React state hooks within `ChatView` to manage message flow.
-- **Styling**: Uses CSS Modules (`ChatView.module.css`) to achieve a sleek, Linear-inspired monochrome aesthetic.
-- **Responsiveness**: Designed to work across different viewport sizes with a focus on desktop productivity.
+- **State Management**: Local state is minimized in favor of Convex's server-authoritative state.
+- **Styling**: Uses CSS Modules (`ChatView.module.css`) to maintain the sleek, Linear-inspired monochrome aesthetic.
+- **Micro-interactions**: Includes animations for new messages and smooth scrolling behaviors.

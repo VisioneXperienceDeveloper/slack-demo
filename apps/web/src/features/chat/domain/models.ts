@@ -30,6 +30,15 @@ export interface Channel {
   isPrivate: boolean;
   memberCount: number;
   createdAt: Date;
+  type?: 'channel' | 'dm';
+}
+
+export interface Conversation {
+  id: string;
+  workspaceId: string;
+  memberOneId: string;
+  memberTwoId: string;
+  channelId: string;
 }
 
 export interface Message {
@@ -42,12 +51,14 @@ export interface Message {
   isEdited: boolean;
   reactions: Reaction[];
   threadCount?: number;
+  parentMessageId?: string;
+  image?: string;
 }
 
 export interface Reaction {
   emoji: string;
   count: number;
-  users: string[]; // user IDs
+  userIds: string[];
 }
 
 export interface ChatState {

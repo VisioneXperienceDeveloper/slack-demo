@@ -1,0 +1,1 @@
+export { WorkspaceOnboarding } from './WorkspaceOnboarding';

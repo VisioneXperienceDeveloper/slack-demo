@@ -6,11 +6,20 @@
  * mock data, REST API, WebSocket, etc.
  */
 
-import type { Channel, Message, User } from '../domain/models';
+import type { Channel, Message, User, Workspace } from '../domain/models';
 
 export interface ChatService {
-  /** Get all available channels */
-  getChannels(): Promise<Channel[]>;
+  /** Get all workspaces for the current user */
+  getWorkspaces(): Promise<Workspace[]>;
+
+  /** Get a single workspace by ID */
+  getWorkspace(workspaceId: string): Promise<Workspace | null>;
+
+  /** Create a new workspace */
+  createWorkspace(name: string, owner: User): Promise<Workspace>;
+
+  /** Get all available channels in a workspace */
+  getChannels(workspaceId: string): Promise<Channel[]>;
 
   /** Get a single channel by ID */
   getChannel(channelId: string): Promise<Channel | null>;
@@ -19,7 +28,7 @@ export interface ChatService {
   getMessages(channelId: string): Promise<Message[]>;
 
   /** Send a new message to a channel */
-  sendMessage(channelId: string, content: string, author: User): Promise<Message>;
+  sendMessage(workspaceId: string, channelId: string, content: string, author: User): Promise<Message>;
 
   /** Get all users */
   getUsers(): Promise<User[]>;

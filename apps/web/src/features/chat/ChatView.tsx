@@ -11,14 +11,17 @@
 import { useState, useEffect, useCallback } from 'react';
 import type { Channel, Message, User } from './domain/models';
 import { chatService } from './services/mock-chat.service';
-import Sidebar from './components/Sidebar';
 import ChatHeader from './components/ChatHeader';
 import MessageList from './components/MessageList';
 import MessageInput from './components/MessageInput';
 import styles from './ChatView.module.css';
 
-export default function ChatView() {
-  const [channels, setChannels] = useState<Channel[]>([]);
+interface ChatViewProps {
+  workspaceId: string;
+  channelId: string;
+}
+
+export default function ChatView({ workspaceId, channelId }: ChatViewProps) {
   const [currentChannel, setCurrentChannel] = useState<Channel | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
@@ -31,17 +34,16 @@ export default function ChatView() {
     async function init() {
       setIsLoading(true);
       try {
-        const [channelList, user] = await Promise.all([
-          chatService.getChannels(),
+        const [channel, user, msgs] = await Promise.all([
+          chatService.getChannel(channelId),
           chatService.getCurrentUser(),
+          chatService.getMessages(channelId),
         ]);
-        setChannels(channelList);
-        setCurrentUser(user);
-
-        // Auto-select first channel
-        if (channelList.length > 0) {
-          setCurrentChannel(channelList[0]);
-          const msgs = await chatService.getMessages(channelList[0].id);
+        
+        // Verify channel belongs to workspace
+        if (channel && channel.workspaceId === workspaceId) {
+          setCurrentChannel(channel);
+          setCurrentUser(user);
           setMessages(msgs);
         }
       } finally {
@@ -50,20 +52,7 @@ export default function ChatView() {
     }
 
     init();
-  }, []);
-
-  // ─── Channel Selection ────────────────────────────────
-
-  const handleChannelSelect = useCallback(async (channel: Channel) => {
-    setCurrentChannel(channel);
-    setIsLoading(true);
-    try {
-      const msgs = await chatService.getMessages(channel.id);
-      setMessages(msgs);
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
+  }, [workspaceId, channelId]);
 
   // ─── Send Message ─────────────────────────────────────
 
@@ -74,6 +63,7 @@ export default function ChatView() {
       setIsSending(true);
       try {
         const newMessage = await chatService.sendMessage(
+          workspaceId,
           currentChannel.id,
           content,
           currentUser,
@@ -83,38 +73,30 @@ export default function ChatView() {
         setIsSending(false);
       }
     },
-    [currentChannel, currentUser, isSending],
+    [workspaceId, currentChannel, currentUser, isSending],
   );
 
   // ─── Render ───────────────────────────────────────────
 
-  if (!currentUser) {
+  if (!currentUser || !currentChannel) {
     return (
       <div className={styles.loadingScreen}>
         <div className={styles.loadingSpinner} />
-        <p className={styles.loadingText}>Loading workspace...</p>
+        <p className={styles.loadingText}>Loading channel...</p>
       </div>
     );
   }
 
   return (
-    <div className={styles.layout}>
-      <Sidebar
-        channels={channels}
-        currentChannel={currentChannel}
-        currentUser={currentUser}
-        onChannelSelect={handleChannelSelect}
-      />
+    <div className={styles.layout} style={{ gridTemplateColumns: '1fr' }}>
       <main className={styles.main}>
         <ChatHeader channel={currentChannel} />
         <MessageList messages={messages} isLoading={isLoading} />
-        {currentChannel && (
-          <MessageInput
-            channelName={currentChannel.name}
-            onSend={handleSendMessage}
-            disabled={isSending}
-          />
-        )}
+        <MessageInput
+          channelName={currentChannel.name}
+          onSend={handleSendMessage}
+          disabled={isSending}
+        />
       </main>
     </div>
   );

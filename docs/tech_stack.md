@@ -20,5 +20,16 @@ This project is built as a high-performance, real-time monorepo using industry-s
 - **Functions**: Convex Queries and Mutations (Type-safe)
 - **Hooks**: `useQuery`, `useMutation` from `convex/react`
 
-## Shared Packages (`packages/`)
-- **auth**: Shared authentication logic and providers for Clerk-Convex integration.
+## CI/CD & Automation
+- **Branching**: `main` (Production), `feature/*` (Development).
+- **Mandatory Checks**: `npm run lint`, `npm run test`, and `npm run build` must pass before any PR or push.
+
+## Agent Skills
+The project utilizes specialized AI agent skills for automation:
+- **@add-docs**: (Current) Automated documentation management.
+- **@gc**: Automated git staging and semantic committing.
+- **@gpr**: Automated Pull Request creation on GitHub.
+
+## Reference
+- [Architecture](./architecture.md)
+- [Design System](./design_system.md)

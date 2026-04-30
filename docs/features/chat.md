@@ -8,10 +8,9 @@ The Chat feature provides a high-fidelity, real-time messaging experience using 
   - Channel metadata fetching via `api.channels.get`.
   - Paginated message fetching via `usePaginatedQuery`.
   - Message submission via `useMutation`.
-- **MessageList**: Renders the stream of messages. It handles:
-  - Infinite scrolling (via pagination results).
-  - Loading states for initial and subsequent pages.
-- **MessageInput**: A sophisticated input area with support for rich content and submission handling.
+- **MessageList**: A real-time updating list of messages. Uses Convex `useQuery` for automatic synchronization.
+- **MessageBubble**: Renders individual messages with support for avatars, author names, timestamps, and thread indicators.
+- **MessageInput**: A sophisticated input component for composing and sending messages via Convex mutations.
 
 ## Backend Logic (`convex/messages.ts`)
 

@@ -11,9 +11,16 @@ import Link from 'next/link';
 import type { Channel, User, Workspace } from '@/features/chat/domain/models';
 import styles from './Sidebar.module.css';
 
+interface DMItem {
+  id: string;
+  channelId: string;
+  otherUser?: User;
+}
+
 interface SidebarProps {
   workspace: Workspace;
   channels: Channel[];
+  dms?: DMItem[];
   currentChannel: Channel | null;
   currentUser: User;
 }
@@ -21,6 +28,7 @@ interface SidebarProps {
 export default function Sidebar({
   workspace,
   channels,
+  dms = [],
   currentChannel,
   currentUser,
 }: SidebarProps) {
@@ -92,29 +100,58 @@ export default function Sidebar({
         </ul>
       </nav>
 
-      {/* Channels Section */}
-      <div className={styles.section}>
-        <button className={styles.sectionHeader}>
-          <svg width="10" height="10" viewBox="0 0 10 10" fill="none" className={styles.chevron}>
-            <path d="M3 4L5 6L7 4" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
-          </svg>
-          <span>Channels</span>
-        </button>
-        <ul className={styles.channelList}>
-          {channels.map((channel) => (
-            <li key={channel.id}>
-              <Link
-                href={`/workspace/${workspace.id}/channel/${channel.id}`}
-                className={`${styles.channelItem} ${
-                  currentChannel?.id === channel.id ? styles.active : ''
-                }`}
-              >
-                <span className={styles.hash}>#</span>
-                <span className={styles.channelName}>{channel.name}</span>
-              </Link>
-            </li>
-          ))}
-        </ul>
+      <div className={styles.scrollable}>
+        {/* Channels Section */}
+        <div className={styles.section}>
+          <button className={styles.sectionHeader}>
+            <svg width="10" height="10" viewBox="0 0 10 10" fill="none" className={styles.chevron}>
+              <path d="M3 4L5 6L7 4" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
+            </svg>
+            <span>Channels</span>
+          </button>
+          <ul className={styles.channelList}>
+            {channels.map((channel) => (
+              <li key={channel.id}>
+                <Link
+                  href={`/workspace/${workspace.id}/channel/${channel.id}`}
+                  className={`${styles.channelItem} ${
+                    currentChannel?.id === channel.id ? styles.active : ''
+                  }`}
+                >
+                  <span className={styles.hash}>#</span>
+                  <span className={styles.channelName}>{channel.name}</span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        {/* Direct Messages Section */}
+        <div className={styles.section}>
+          <button className={styles.sectionHeader}>
+            <svg width="10" height="10" viewBox="0 0 10 10" fill="none" className={styles.chevron}>
+              <path d="M3 4L5 6L7 4" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
+            </svg>
+            <span>Direct Messages</span>
+          </button>
+          <ul className={styles.channelList}>
+            {dms.map((dm) => (
+              <li key={dm.id}>
+                <Link
+                  href={`/workspace/${workspace.id}/channel/${dm.channelId}`}
+                  className={`${styles.channelItem} ${
+                    currentChannel?.id === dm.channelId ? styles.active : ''
+                  }`}
+                >
+                  <span className={styles.dmAvatar}>
+                    {dm.otherUser?.displayName?.substring(0, 1).toUpperCase() || '?'}
+                  </span>
+                  <span className={styles.channelName}>{dm.otherUser?.displayName || 'Unknown'}</span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
 
       {/* User Section */}

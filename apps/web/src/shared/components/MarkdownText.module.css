@@ -1,0 +1,42 @@
+.markdownWrapper {
+  word-break: break-word;
+}
+
+.paragraph {
+  margin: 0;
+  padding: 0;
+}
+
+.link {
+  color: var(--text-link, #2b82d9);
+  text-decoration: none;
+}
+
+.link:hover {
+  text-decoration: underline;
+}
+
+.inlineCode {
+  background-color: var(--bg-tertiary, rgba(255, 255, 255, 0.1));
+  padding: 2px 4px;
+  border-radius: 4px;
+  font-family: monospace;
+  font-size: 0.9em;
+  color: var(--text-brand, #ff4d4d);
+}
+
+.blockCode {
+  display: block;
+  font-family: monospace;
+  font-size: 0.9em;
+  white-space: pre-wrap;
+}
+
+.pre {
+  background-color: var(--bg-tertiary, rgba(255, 255, 255, 0.05));
+  padding: 12px;
+  border-radius: 6px;
+  border: 1px solid var(--border-subtle, rgba(255, 255, 255, 0.1));
+  overflow-x: auto;
+  margin: 8px 0;
+}

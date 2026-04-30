@@ -14,11 +14,12 @@ export default function SidebarContainer({ workspaceId }: SidebarContainerProps)
   const workspace = useQuery(api.workspaces.get, { workspaceId: workspaceId as Id<"workspaces"> });
   const currentUser = useQuery(api.users.viewer);
   const channels = useQuery(api.channels.list, { workspaceId: workspaceId as Id<"workspaces"> });
+  const conversations = useQuery(api.conversations.list, { workspaceId: workspaceId as Id<"workspaces"> });
   
   const params = useParams();
   const currentChannelId = params.channelId as string;
 
-  if (workspace === undefined || currentUser === undefined || channels === undefined) {
+  if (workspace === undefined || currentUser === undefined || channels === undefined || conversations === undefined) {
     return (
       <aside style={{ width: 'var(--sidebar-width)', backgroundColor: 'var(--bg-secondary)', borderRight: '1px solid var(--border-subtle)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <div className="loading-spinner" />
@@ -61,12 +62,28 @@ export default function SidebarContainer({ workspaceId }: SidebarContainerProps)
     createdAt: new Date(ch.createdAt),
   }));
 
+  const mappedDms = conversations.map((conv) => ({
+    id: conv.channelId,
+    workspaceId: conv.workspaceId,
+    memberOneId: conv.memberOneId,
+    memberTwoId: conv.memberTwoId,
+    channelId: conv.channelId,
+    otherUser: conv.otherUser ? {
+      id: conv.otherUser._id,
+      name: conv.otherUser.name || 'Anonymous',
+      displayName: conv.otherUser.name || 'Anonymous',
+      avatarUrl: conv.otherUser.image,
+      status: 'online' as const,
+    } : undefined,
+  })) || [];
+
   const currentChannel = mappedChannels.find(c => c.id === currentChannelId) || null;
 
   return (
     <Sidebar
       workspace={mappedWorkspace}
       channels={mappedChannels}
+      dms={mappedDms}
       currentChannel={currentChannel}
       currentUser={mappedCurrentUser}
     />

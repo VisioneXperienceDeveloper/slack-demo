@@ -2,7 +2,9 @@
 
 import { useEffect, useState, use } from 'react';
 import { useRouter } from 'next/navigation';
-import { chatService } from '@/features/chat';
+import { useQuery } from 'convex/react';
+import { api } from '../../../../../../convex/_generated/api';
+import type { Id } from '../../../../../../convex/_generated/dataModel';
 
 export default function WorkspaceRedirectPage({
   params,
@@ -12,26 +14,18 @@ export default function WorkspaceRedirectPage({
   const router = useRouter();
   const [error, setError] = useState(false);
   const resolvedParams = use(params);
+  const channels = useQuery(api.channels.list, { workspaceId: resolvedParams.workspaceId as Id<"workspaces"> });
 
   useEffect(() => {
-    async function redirect() {
-      try {
-        const channels = await chatService.getChannels(resolvedParams.workspaceId);
-        if (channels.length > 0) {
-          const generalChannel = channels.find(c => c.name === 'general') || channels[0];
-          router.replace(`/workspace/${resolvedParams.workspaceId}/channel/${generalChannel.id}`);
-        } else {
-          // No channels exist, but we should theoretically have a general channel created
-          setError(true);
-        }
-      } catch (e) {
-        console.error(e);
-        setError(true);
-      }
+    if (channels === undefined) return;
+
+    if (channels.length > 0) {
+      const generalChannel = channels.find(c => c.name === 'general') || channels[0];
+      router.replace(`/workspace/${resolvedParams.workspaceId}/channel/${generalChannel._id}`);
+    } else {
+      setError(true);
     }
-    
-    redirect();
-  }, [resolvedParams.workspaceId, router]);
+  }, [channels, resolvedParams.workspaceId, router]);
 
   if (error) {
     return (

@@ -2,13 +2,15 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { chatService } from '@/features/chat';
+import { useMutation } from 'convex/react';
+import { api } from '../../../../../convex/_generated/api';
 import styles from './WorkspaceOnboarding.module.css';
 
 export function WorkspaceOnboarding() {
   const [name, setName] = useState('');
   const [isCreating, setIsCreating] = useState(false);
   const router = useRouter();
+  const createWorkspace = useMutation(api.workspaces.create);
 
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -17,12 +19,8 @@ export function WorkspaceOnboarding() {
 
     setIsCreating(true);
     try {
-      const currentUser = await chatService.getCurrentUser();
-      const workspace = await chatService.createWorkspace(trimmedName, currentUser);
-      const channels = await chatService.getChannels(workspace.id);
-      const generalChannel = channels.find(c => c.name === 'general') || channels[0];
-      
-      router.push(`/workspace/${workspace.id}/channel/${generalChannel.id}`);
+      const workspaceId = await createWorkspace({ name: trimmedName });
+      router.push(`/workspace/${workspaceId}`);
     } catch (error) {
       console.error('Failed to create workspace:', error);
       setIsCreating(false);

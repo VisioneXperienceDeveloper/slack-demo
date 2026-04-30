@@ -23,11 +23,14 @@ Joins users to workspaces with specific roles.
 - `userId`: Reference to `users`.
 - `workspaceId`: Reference to `workspaces`.
 - `role`: `"owner" | "admin" | "member"`.
-- Indexes: `by_userId`, `by_workspaceId`, `by_userId_and_workspaceId`.
+- Indexes: 
+  - `by_userId`: Filter workspaces by user.
+  - `by_workspaceId`: List all members in a workspace.
+  - `by_userId_and_workspaceId`: Efficiently check if a user is in a specific workspace.
 
 ### `channels`
 Chat areas within a workspace.
-- `name`: Channel name.
+- `name`: Channel name (sanitized for URL).
 - `workspaceId`: Reference to `workspaces`.
 - `description`: (Optional) Purpose of the channel.
 - `isPrivate`: Boolean visibility flag.
@@ -40,8 +43,11 @@ The core communication entity.
 - `channelId`: Reference to `channels`.
 - `workspaceId`: Reference to `workspaces`.
 - `updatedAt`: (Optional) Last edit timestamp.
-- Indexes: `by_channelId`, `by_workspaceId`.
+- Indexes: 
+  - `by_channelId`: For listing messages in a channel.
+  - `by_workspaceId`: For workspace-wide searches or logic.
 
-## Query Patterns
-- **Join-like**: Convex doesn't have traditional SQL joins. Relationships are handled by querying indexes (e.g., fetching all members for a `workspaceId`).
-- **Real-time**: Any query used in a React component automatically becomes a "subscription", updating the UI as the data changes.
+## Pagination & Optimization
+- **Paginated Queries**: Messages are fetched using `paginate()` to ensure performance even with millions of records.
+- **Joined Data**: The `list` query for messages automatically joins author data using `ctx.db.get(msg.authorId)` to reduce client-side overhead.
+- **Indexes**: All queries are backed by indexes to prevent full-table scans.

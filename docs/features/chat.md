@@ -1,28 +1,35 @@
 # Chat Feature
 
-The Chat feature is the core functional block of the Slack Clone. It provides a full-featured, real-time messaging experience.
+The Chat feature provides a high-fidelity, real-time messaging experience using Convex's reactive engine.
 
 ## Components
 
-- **ChatView**: The main container that orchestrates the message flow and channel context.
-- **MessageList**: A real-time updating list of messages. Uses Convex `useQuery` for automatic synchronization.
-- **MessageInput**: A sophisticated input component for composing and sending messages via Convex mutations.
+- **ChatView**: The main orchestrator. It manages:
+  - Channel metadata fetching via `api.channels.get`.
+  - Paginated message fetching via `usePaginatedQuery`.
+  - Message submission via `useMutation`.
+- **MessageList**: Renders the stream of messages. It handles:
+  - Infinite scrolling (via pagination results).
+  - Loading states for initial and subsequent pages.
+- **MessageInput**: A sophisticated input area with support for rich content and submission handling.
 
-## Backend Integration (`convex/messages.ts`)
+## Backend Logic (`convex/messages.ts`)
 
-Instead of mock services, the chat feature now uses Convex for real-time data persistence:
-- **Queries**: `messages.get` - Fetches messages for a specific channel with optimized indexes.
-- **Mutations**: `messages.send` - Handles message creation and broadcasts it to all connected clients.
+### `list` (Query)
+- Implements **Pagination** to handle large chat histories.
+- **Data Joining**: Automatically resolves `authorId` to a full `user` object before returning to the client.
+- **Ordering**: Returns messages in descending order (newest first) for efficient pagination, which the client then reverses for display.
+
+### `send` (Mutation)
+- **Authorization**: Validates that the user is a member of the workspace before allowing the message to be saved.
+- **Persistence**: Saves the message to the `messages` table and triggers a real-time update for all subscribers.
 
 ## Real-time Sync
 
-The Chat feature leverages Convex's subscription model:
-1. When a user sends a message, a mutation is called.
-2. Convex updates the `messages` table atomically.
-3. All clients currently viewing that channel automatically receive the new message through their active query hooks.
+1. **State Consistency**: Convex ensures that all clients see the same state of the database.
+2. **Subscriptions**: The `useQuery` and `usePaginatedQuery` hooks automatically subscribe to data changes.
+3. **Atomic Updates**: Mutations are transactional, ensuring no partial data is written.
 
-## Implementation Details
-
-- **State Management**: Local state is minimized in favor of Convex's server-authoritative state.
-- **Styling**: Uses CSS Modules (`ChatView.module.css`) to maintain the sleek, Linear-inspired monochrome aesthetic.
-- **Micro-interactions**: Includes animations for new messages and smooth scrolling behaviors.
+## Performance
+- **Indexed Access**: Messages are always filtered by `channelId` using a dedicated index.
+- **Efficient Joins**: Author data is fetched in parallel using `Promise.all` in the query handler.

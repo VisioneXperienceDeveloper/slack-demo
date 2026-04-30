@@ -18,6 +18,10 @@ Welcome to the official documentation for the Slack Clone project. This project 
 - [Chat Feature](./features/chat.md): Detailed documentation of the core chat functionality.
 - [Workspace Feature](./features/workspace.md): Onboarding and workspace management.
 
+### ⚙️ Development & Quality
+- [Testing](./testing.md): Frameworks, mocking strategy, and running tests.
+- [Documentation Guidelines](./guidelines.md): Standards and rules for project documentation.
+
 ## Project Vision
 
 The goal of this project is to demonstrate a professional-grade web application with:

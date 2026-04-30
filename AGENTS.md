@@ -25,3 +25,15 @@ Convex agent skills for common tasks can be installed by running `npx convex ai-
 - **Import Aliases**:
   - **NEVER** use deeply nested relative paths (e.g., `../../../../convex/_generated/api`) to import Convex modules.
   - **Always** use the `@convex/` path alias (e.g., `import { api } from '@convex/_generated/api'`) to ensure cleaner and more maintainable code. This is enforced by ESLint.
+## Documentation Standards
+
+- **Vertical Slice First**: Always document features as complete slices (UI + Backend + Logic).
+- **Living Docs**: Update `/docs` immediately whenever the architecture, stack, or schema changes.
+- **Entry Point**: Keep `docs/index.md` as the source of truth for all documentation links.
+- **Reference**: Follow the detailed guidelines in [docs/guidelines.md](./docs/guidelines.md).
+
+## Custom Skills
+
+- **@add-docs**: Analyzes the project and updates `/docs` according to the standards. Located in `.agents/skills/docs/add-docs`.
+- **@gc**: Groups changes and commits them step-by-step to separate branches. Located in `.agents/skills/git/git-stage-commit`.
+- **@gpr**: Pushes branches and creates Pull Requests on GitHub. Located in `.agents/skills/git/git-create-pr`.

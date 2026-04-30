@@ -9,8 +9,34 @@ export const send = mutation({
     body: v.string(),
   },
   handler: async (ctx, args) => {
-    // To be implemented when connecting to Convex
-    return null;
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) throw new Error("Unauthorized");
+
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_externalId", (q) => q.eq("externalId", identity.subject))
+      .unique();
+
+    if (!user) throw new Error("User not found");
+
+    const member = await ctx.db
+      .query("members")
+      .withIndex("by_userId_and_workspaceId", (q) => 
+        q.eq("userId", user._id).eq("workspaceId", args.workspaceId)
+      )
+      .unique();
+
+    if (!member) throw new Error("Unauthorized to send messages");
+
+    const messageId = await ctx.db.insert("messages", {
+      body: args.body,
+      authorId: user._id,
+      channelId: args.channelId,
+      workspaceId: args.workspaceId,
+      updatedAt: Date.now(),
+    });
+
+    return messageId;
   },
 });
 
@@ -20,11 +46,23 @@ export const list = query({
     paginationOpts: paginationOptsValidator,
   },
   handler: async (ctx, args) => {
-    // To be implemented when connecting to Convex
+    const messages = await ctx.db
+      .query("messages")
+      .withIndex("by_channelId", (q) => q.eq("channelId", args.channelId))
+      .order("desc")
+      .paginate(args.paginationOpts);
+
     return {
-      page: [],
-      isDone: true,
-      continueCursor: "",
+      ...messages,
+      page: await Promise.all(
+        messages.page.map(async (msg) => {
+          const author = await ctx.db.get(msg.authorId);
+          return {
+            ...msg,
+            author,
+          };
+        })
+      ),
     };
   },
 });

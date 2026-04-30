@@ -1,8 +1,10 @@
 'use client';
 
-import { useEffect, useState, use } from 'react';
+import { useEffect, use } from 'react';
 import { useRouter } from 'next/navigation';
-import { chatService } from '@/features/chat';
+import { useQuery } from 'convex/react';
+import { api } from '@convex/_generated/api';
+import type { Id } from '@convex/_generated/dataModel';
 
 export default function WorkspaceRedirectPage({
   params,
@@ -10,30 +12,20 @@ export default function WorkspaceRedirectPage({
   params: Promise<{ workspaceId: string }>;
 }) {
   const router = useRouter();
-  const [error, setError] = useState(false);
   const resolvedParams = use(params);
+  
+  // Conditionally skip query if the ID is obviously not a Convex ID (like the old "ws-1")
+  const isValidId = resolvedParams.workspaceId.length > 10;
+  const channels = useQuery(api.channels.list, isValidId ? { workspaceId: resolvedParams.workspaceId as Id<"workspaces"> } : "skip");
 
   useEffect(() => {
-    async function redirect() {
-      try {
-        const channels = await chatService.getChannels(resolvedParams.workspaceId);
-        if (channels.length > 0) {
-          const generalChannel = channels.find(c => c.name === 'general') || channels[0];
-          router.replace(`/workspace/${resolvedParams.workspaceId}/channel/${generalChannel.id}`);
-        } else {
-          // No channels exist, but we should theoretically have a general channel created
-          setError(true);
-        }
-      } catch (e) {
-        console.error(e);
-        setError(true);
-      }
+    if (channels && channels.length > 0) {
+      const generalChannel = channels.find(c => c.name === 'general') || channels[0];
+      router.replace(`/workspace/${resolvedParams.workspaceId}/channel/${generalChannel._id}`);
     }
-    
-    redirect();
-  }, [resolvedParams.workspaceId, router]);
+  }, [channels, resolvedParams.workspaceId, router]);
 
-  if (error) {
+  if (channels && channels.length === 0) {
     return (
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: 'var(--text-secondary)' }}>
         No channels found for this workspace.

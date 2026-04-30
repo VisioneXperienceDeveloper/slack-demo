@@ -2,9 +2,9 @@
 
 import { useParams } from 'next/navigation';
 import { useQuery } from 'convex/react';
-import { api } from '../../../../../../convex/_generated/api';
+import { api } from '@convex/_generated/api';
 import Sidebar from './Sidebar';
-import type { Id } from '../../../../../../convex/_generated/dataModel';
+import type { Id } from '@convex/_generated/dataModel';
 
 interface SidebarContainerProps {
   workspaceId: string;

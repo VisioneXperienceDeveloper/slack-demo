@@ -10,8 +10,8 @@
 
 import { useState, useCallback } from 'react';
 import { useQuery, useMutation, usePaginatedQuery } from 'convex/react';
-import { api } from '../../../../../convex/_generated/api';
-import type { Id } from '../../../../../convex/_generated/dataModel';
+import { api } from '@convex/_generated/api';
+import type { Id } from '@convex/_generated/dataModel';
 import type { Message } from './domain/models';
 import ChatHeader from './components/ChatHeader';
 import MessageList from './components/MessageList';

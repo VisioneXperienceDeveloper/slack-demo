@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { UserButton, SignInButton } from '@clerk/nextjs';
 import { Authenticated, Unauthenticated, AuthLoading } from 'convex/react';
 import { useQuery } from 'convex/react';
-import { api } from '../../../../convex/_generated/api';
+import { api } from '@convex/_generated/api';
 import { WorkspaceOnboarding } from '@/features/workspace';
 
 function AuthenticatedEntryPoint() {

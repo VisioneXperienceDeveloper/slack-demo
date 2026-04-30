@@ -16,3 +16,16 @@ Convex agent skills for common tasks can be installed by running `npx convex ai-
   - All Pull Requests to the `main` branch must pass automated tests, linting, and build checks before they can be merged.
 - **Continuous Deployment (CD)**:
   - Deployment should only occur automatically upon successful merge/push to the `main` branch.
+
+## Documentation Standards
+
+- **Vertical Slice First**: Always document features as complete slices (UI + Backend + Logic).
+- **Living Docs**: Update `/docs` immediately whenever the architecture, stack, or schema changes.
+- **Entry Point**: Keep `docs/index.md` as the source of truth for all documentation links.
+- **Reference**: Follow the detailed guidelines in [docs/guidelines.md](./docs/guidelines.md).
+
+## Custom Skills
+
+- **@add-docs**: Analyzes the project and updates `/docs` according to the standards. Located in `.agents/skills/docs/add-docs`.
+- **@gc**: Groups changes and commits them step-by-step to separate branches. Located in `.agents/skills/git/git-stage-commit`.
+- **@gpr**: Pushes branches and creates Pull Requests on GitHub. Located in `.agents/skills/git/git-create-pr`.

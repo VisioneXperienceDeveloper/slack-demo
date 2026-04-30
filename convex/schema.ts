@@ -31,6 +31,7 @@ export default defineSchema({
     description: v.optional(v.string()),
     isPrivate: v.boolean(),
     createdAt: v.number(),
+    type: v.optional(v.union(v.literal("channel"), v.literal("dm"))),
   }).index("by_workspaceId", ["workspaceId"]),
 
   messages: defineTable({
@@ -39,7 +40,27 @@ export default defineSchema({
     channelId: v.id("channels"),
     workspaceId: v.id("workspaces"),
     updatedAt: v.optional(v.number()),
+    parentMessageId: v.optional(v.id("messages")),
+    image: v.optional(v.id("_storage")),
   })
     .index("by_channelId", ["channelId"])
-    .index("by_workspaceId", ["workspaceId"]),
+    .index("by_workspaceId", ["workspaceId"])
+    .index("by_parentMessageId", ["parentMessageId"]),
+
+  reactions: defineTable({
+    messageId: v.id("messages"),
+    userId: v.id("users"),
+    emoji: v.string(),
+  })
+    .index("by_messageId", ["messageId"])
+    .index("by_messageId_and_userId_and_emoji", ["messageId", "userId", "emoji"]),
+
+  conversations: defineTable({
+    workspaceId: v.id("workspaces"),
+    memberOneId: v.id("users"),
+    memberTwoId: v.id("users"),
+    channelId: v.id("channels"),
+  })
+    .index("by_workspaceId", ["workspaceId"])
+    .index("by_members", ["memberOneId", "memberTwoId"]),
 });

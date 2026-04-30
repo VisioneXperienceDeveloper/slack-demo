@@ -10,6 +10,5 @@ export { default as MessageInput } from './components/MessageInput';
 export { default as MessageBubble } from './components/MessageBubble';
 
 export type { ChatService } from './services/chat.service';
-export { chatService } from './services/mock-chat.service';
 
 export type { User, Channel, Message, Reaction, ChatState } from './domain/models';

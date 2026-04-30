@@ -281,7 +281,7 @@ export class MockChatService implements ChatService {
 
   async getMessages(channelId: string): Promise<Message[]> {
     await this.delay(150);
-    return this.messageStore[channelId] ?? [];
+    return [...(this.messageStore[channelId] ?? [])];
   }
 
   async sendMessage(workspaceId: string, channelId: string, content: string, author: User): Promise<Message> {

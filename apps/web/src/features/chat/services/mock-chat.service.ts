@@ -6,8 +6,20 @@
  * Slack-like chat experience.
  */
 
-import type { Channel, Message, User } from '../domain/models';
+import type { Channel, Message, User, Workspace } from '../domain/models';
 import type { ChatService } from './chat.service';
+
+// ─── Mock Workspaces ─────────────────────────────────────────
+
+const mockWorkspaces: Workspace[] = [
+  {
+    id: 'ws-1',
+    name: 'Default Workspace',
+    ownerId: 'user-1',
+    joinCode: 'ABCDEF',
+    createdAt: new Date('2024-01-01'),
+  }
+];
 
 // ─── Mock Users ──────────────────────────────────────────────
 
@@ -49,6 +61,7 @@ const mockUsers: User[] = [
 const mockChannels: Channel[] = [
   {
     id: 'ch-general',
+    workspaceId: 'ws-1',
     name: 'general',
     description: 'Company-wide announcements and work-based matters',
     isPrivate: false,
@@ -57,6 +70,7 @@ const mockChannels: Channel[] = [
   },
   {
     id: 'ch-engineering',
+    workspaceId: 'ws-1',
     name: 'engineering',
     description: 'Engineering team discussions',
     isPrivate: false,
@@ -65,6 +79,7 @@ const mockChannels: Channel[] = [
   },
   {
     id: 'ch-design',
+    workspaceId: 'ws-1',
     name: 'design',
     description: 'Design team discussions and reviews',
     isPrivate: false,
@@ -73,6 +88,7 @@ const mockChannels: Channel[] = [
   },
   {
     id: 'ch-random',
+    workspaceId: 'ws-1',
     name: 'random',
     description: 'Non-work banter and water cooler conversation',
     isPrivate: false,
@@ -81,6 +97,7 @@ const mockChannels: Channel[] = [
   },
   {
     id: 'ch-standup',
+    workspaceId: 'ws-1',
     name: 'daily-standup',
     description: 'Daily standup notes',
     isPrivate: false,
@@ -103,6 +120,7 @@ const mockMessages: Record<string, Message[]> = {
     {
       id: 'msg-1',
       channelId: 'ch-general',
+      workspaceId: 'ws-1',
       author: mockUsers[1],
       content: 'Good morning everyone! 👋 Just pushed the latest design system updates to the staging environment.',
       timestamp: makeTime(3, 20),
@@ -112,6 +130,7 @@ const mockMessages: Record<string, Message[]> = {
     {
       id: 'msg-2',
       channelId: 'ch-general',
+      workspaceId: 'ws-1',
       author: mockUsers[2],
       content: 'Looks great! The new color tokens are much more consistent now. I especially like how the hover states feel.',
       timestamp: makeTime(3, 15),
@@ -121,6 +140,7 @@ const mockMessages: Record<string, Message[]> = {
     {
       id: 'msg-3',
       channelId: 'ch-general',
+      workspaceId: 'ws-1',
       author: mockUsers[0],
       content: 'Nice work @Sarah. Quick question — are we going with the 4px or 8px border radius for cards? I saw both in the Figma.',
       timestamp: makeTime(3, 10),
@@ -130,6 +150,7 @@ const mockMessages: Record<string, Message[]> = {
     {
       id: 'msg-4',
       channelId: 'ch-general',
+      workspaceId: 'ws-1',
       author: mockUsers[1],
       content: '8px for cards, 4px for buttons and inputs. I\'ll update the spec doc today.',
       timestamp: makeTime(3, 5),
@@ -139,6 +160,7 @@ const mockMessages: Record<string, Message[]> = {
     {
       id: 'msg-5',
       channelId: 'ch-general',
+      workspaceId: 'ws-1',
       author: mockUsers[4],
       content: 'Hey team, the sprint review is at 3pm today. Please have your demos ready. We\'ll be presenting to stakeholders.',
       timestamp: makeTime(2, 30),
@@ -148,6 +170,7 @@ const mockMessages: Record<string, Message[]> = {
     {
       id: 'msg-6',
       channelId: 'ch-general',
+      workspaceId: 'ws-1',
       author: mockUsers[3],
       content: 'Will do! I have the new onboarding flow ready to show. Also integrated the analytics tracking we discussed last week.',
       timestamp: makeTime(2, 20),
@@ -157,6 +180,7 @@ const mockMessages: Record<string, Message[]> = {
     {
       id: 'msg-7',
       channelId: 'ch-general',
+      workspaceId: 'ws-1',
       author: mockUsers[0],
       content: 'Perfect. I\'ll present the API migration progress — we\'ve moved 80% of the endpoints to the new gateway.',
       timestamp: makeTime(2, 10),
@@ -167,6 +191,7 @@ const mockMessages: Record<string, Message[]> = {
     {
       id: 'msg-8',
       channelId: 'ch-general',
+      workspaceId: 'ws-1',
       author: mockUsers[2],
       content: 'That\'s impressive progress! Are there any breaking changes we should know about?',
       timestamp: makeTime(1, 45),
@@ -176,6 +201,7 @@ const mockMessages: Record<string, Message[]> = {
     {
       id: 'msg-9',
       channelId: 'ch-general',
+      workspaceId: 'ws-1',
       author: mockUsers[0],
       content: 'Nothing breaking for the frontend. The response shapes are identical — we\'re just changing the routing layer underneath. I documented everything in Notion.',
       timestamp: makeTime(1, 30),
@@ -185,6 +211,7 @@ const mockMessages: Record<string, Message[]> = {
     {
       id: 'msg-10',
       channelId: 'ch-general',
+      workspaceId: 'ws-1',
       author: mockUsers[4],
       content: 'Also reminder: we have a team dinner at 7pm tonight at the usual place. Please RSVP in the thread if you haven\'t already! 🍕',
       timestamp: makeTime(0, 45),
@@ -201,17 +228,55 @@ const mockMessages: Record<string, Message[]> = {
 // ─── Service Implementation ─────────────────────────────────
 
 export class MockChatService implements ChatService {
+  private workspaceStore: Workspace[] = [...mockWorkspaces];
+  private channelStore: Channel[] = [...mockChannels];
   private messageStore: Record<string, Message[]> = { ...mockMessages };
 
-  async getChannels(): Promise<Channel[]> {
+  async getWorkspaces(): Promise<Workspace[]> {
+    await this.delay(100);
+    return [...this.workspaceStore];
+  }
+
+  async getWorkspace(workspaceId: string): Promise<Workspace | null> {
+    await this.delay(50);
+    return this.workspaceStore.find(ws => ws.id === workspaceId) ?? null;
+  }
+
+  async createWorkspace(name: string, owner: User): Promise<Workspace> {
+    await this.delay(200);
+    const newWs: Workspace = {
+      id: `ws-${Date.now()}`,
+      name,
+      ownerId: owner.id,
+      joinCode: Math.random().toString(36).substring(2, 8).toUpperCase(),
+      createdAt: new Date(),
+    };
+    this.workspaceStore.push(newWs);
+
+    // Auto-create #general channel
+    const generalChannel: Channel = {
+      id: `ch-${Date.now()}`,
+      workspaceId: newWs.id,
+      name: 'general',
+      description: 'Company-wide announcements and work-based matters',
+      isPrivate: false,
+      memberCount: 1,
+      createdAt: new Date(),
+    };
+    this.channelStore.push(generalChannel);
+
+    return newWs;
+  }
+
+  async getChannels(workspaceId: string): Promise<Channel[]> {
     // Simulate network delay
     await this.delay(100);
-    return [...mockChannels];
+    return this.channelStore.filter(ch => ch.workspaceId === workspaceId);
   }
 
   async getChannel(channelId: string): Promise<Channel | null> {
     await this.delay(50);
-    return mockChannels.find(ch => ch.id === channelId) ?? null;
+    return this.channelStore.find(ch => ch.id === channelId) ?? null;
   }
 
   async getMessages(channelId: string): Promise<Message[]> {
@@ -219,12 +284,13 @@ export class MockChatService implements ChatService {
     return this.messageStore[channelId] ?? [];
   }
 
-  async sendMessage(channelId: string, content: string, author: User): Promise<Message> {
+  async sendMessage(workspaceId: string, channelId: string, content: string, author: User): Promise<Message> {
     await this.delay(50);
 
     const newMessage: Message = {
       id: `msg-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`,
       channelId,
+      workspaceId,
       author,
       content,
       timestamp: new Date(),

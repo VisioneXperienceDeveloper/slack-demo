@@ -3,6 +3,7 @@
  */
 
 export { default as Sidebar } from './components/Sidebar';
+export { default as SidebarContainer } from './components/SidebarContainer';
 export { default as ChatHeader } from './components/ChatHeader';
 export { default as MessageList } from './components/MessageList';
 export { default as MessageInput } from './components/MessageInput';

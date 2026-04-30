@@ -14,8 +14,17 @@ export interface User {
   status: 'online' | 'offline' | 'away' | 'dnd';
 }
 
+export interface Workspace {
+  id: string;
+  name: string;
+  ownerId: string;
+  joinCode: string;
+  createdAt: Date;
+}
+
 export interface Channel {
   id: string;
+  workspaceId: string;
   name: string;
   description?: string;
   isPrivate: boolean;
@@ -26,6 +35,7 @@ export interface Channel {
 export interface Message {
   id: string;
   channelId: string;
+  workspaceId: string;
   author: User;
   content: string;
   timestamp: Date;

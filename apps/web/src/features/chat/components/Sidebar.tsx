@@ -7,29 +7,30 @@
 
 'use client';
 
-import type { Channel, User } from '@/features/chat/domain/models';
+import Link from 'next/link';
+import type { Channel, User, Workspace } from '@/features/chat/domain/models';
 import styles from './Sidebar.module.css';
 
 interface SidebarProps {
+  workspace: Workspace;
   channels: Channel[];
   currentChannel: Channel | null;
   currentUser: User;
-  onChannelSelect: (channel: Channel) => void;
 }
 
 export default function Sidebar({
+  workspace,
   channels,
   currentChannel,
   currentUser,
-  onChannelSelect,
 }: SidebarProps) {
   return (
     <aside className={styles.sidebar}>
       {/* Workspace Header */}
       <div className={styles.workspaceHeader}>
         <div className={styles.workspaceName}>
-          <span className={styles.workspaceIcon}>S</span>
-          <h1 className={styles.workspaceTitle}>Slack Clone</h1>
+          <span className={styles.workspaceIcon}>{workspace.name.substring(0, 1).toUpperCase()}</span>
+          <h1 className={styles.workspaceTitle}>{workspace.name}</h1>
         </div>
         <button className={styles.composeBtn} title="New message">
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
@@ -102,15 +103,15 @@ export default function Sidebar({
         <ul className={styles.channelList}>
           {channels.map((channel) => (
             <li key={channel.id}>
-              <button
+              <Link
+                href={`/workspace/${workspace.id}/channel/${channel.id}`}
                 className={`${styles.channelItem} ${
                   currentChannel?.id === channel.id ? styles.active : ''
                 }`}
-                onClick={() => onChannelSelect(channel)}
               >
                 <span className={styles.hash}>#</span>
                 <span className={styles.channelName}>{channel.name}</span>
-              </button>
+              </Link>
             </li>
           ))}
         </ul>

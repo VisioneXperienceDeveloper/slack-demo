@@ -16,3 +16,12 @@ Convex agent skills for common tasks can be installed by running `npx convex ai-
   - All Pull Requests to the `main` branch must pass automated tests, linting, and build checks before they can be merged.
 - **Continuous Deployment (CD)**:
   - Deployment should only occur automatically upon successful merge/push to the `main` branch.
+
+## Coding Standards & Best Practices
+
+- **React Effects & State**:
+  - **NEVER** call `setState` synchronously within a `useEffect` hook. This triggers cascading renders and causes `react-hooks/set-state-in-effect` lint errors.
+  - **Always** prefer Derived State (e.g. calculating values directly during render) over syncing state via `useEffect`.
+- **Import Aliases**:
+  - **NEVER** use deeply nested relative paths (e.g., `../../../../convex/_generated/api`) to import Convex modules.
+  - **Always** use the `@convex/` path alias (e.g., `import { api } from '@convex/_generated/api'`) to ensure cleaner and more maintainable code. This is enforced by ESLint.

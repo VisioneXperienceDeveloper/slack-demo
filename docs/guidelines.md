@@ -36,6 +36,16 @@ Documentation should evolve with the code. If you:
 ### 4. Professional Tone
 Maintain a technical, concise, and professional tone. Focus on "Why" and "How" rather than just "What".
 
+## 💻 Coding Standards
+
+### 1. React Effects & State
+- **NEVER** call `setState` synchronously within a `useEffect` hook. This causes cascading renders.
+- **Derived State**: Always prefer calculating values directly during render instead of syncing state via `useEffect`.
+
+### 2. Import Aliases
+- **Convex Modules**: Always use the `@convex/` path alias (e.g., `import { api } from '@convex/_generated/api'`).
+- **NEVER** use deeply nested relative paths for core modules.
+
 ## 🚀 Checklist for New Features
 - [ ] Create/Update the feature document in `docs/features/`.
 - [ ] Update `database_schema.md` if new tables/indexes were added.

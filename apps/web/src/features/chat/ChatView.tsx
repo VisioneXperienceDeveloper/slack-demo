@@ -8,9 +8,11 @@
 
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
-import type { Channel, Message, User } from './domain/models';
-import { chatService } from './services/mock-chat.service';
+import { useState, useCallback } from 'react';
+import { useQuery, useMutation, usePaginatedQuery } from 'convex/react';
+import { api } from '../../../../../convex/_generated/api';
+import type { Id } from '../../../../../convex/_generated/dataModel';
+import type { Message } from './domain/models';
 import ChatHeader from './components/ChatHeader';
 import MessageList from './components/MessageList';
 import MessageInput from './components/MessageInput';
@@ -21,64 +23,43 @@ interface ChatViewProps {
   channelId: string;
 }
 
+const MESSAGES_PER_PAGE = 50;
+
 export default function ChatView({ workspaceId, channelId }: ChatViewProps) {
-  const [currentChannel, setCurrentChannel] = useState<Channel | null>(null);
-  const [messages, setMessages] = useState<Message[]>([]);
-  const [currentUser, setCurrentUser] = useState<User | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const channel = useQuery(api.channels.get, { channelId: channelId as Id<"channels"> });
+  const currentUser = useQuery(api.users.viewer);
+  const { results: rawMessages, status } = usePaginatedQuery(
+    api.messages.list,
+    { channelId: channelId as Id<"channels"> },
+    { initialNumItems: MESSAGES_PER_PAGE }
+  );
+  
+  const sendMessage = useMutation(api.messages.send);
   const [isSending, setIsSending] = useState(false);
-
-  // ─── Initial Data Load ────────────────────────────────
-
-  useEffect(() => {
-    async function init() {
-      setIsLoading(true);
-      try {
-        const [channel, user, msgs] = await Promise.all([
-          chatService.getChannel(channelId),
-          chatService.getCurrentUser(),
-          chatService.getMessages(channelId),
-        ]);
-        
-        // Verify channel belongs to workspace
-        if (channel && channel.workspaceId === workspaceId) {
-          setCurrentChannel(channel);
-          setCurrentUser(user);
-          setMessages(msgs);
-        }
-      } finally {
-        setIsLoading(false);
-      }
-    }
-
-    init();
-  }, [workspaceId, channelId]);
 
   // ─── Send Message ─────────────────────────────────────
 
   const handleSendMessage = useCallback(
     async (content: string) => {
-      if (!currentChannel || !currentUser || isSending) return;
+      if (!channel || !currentUser || isSending) return;
 
       setIsSending(true);
       try {
-        const newMessage = await chatService.sendMessage(
-          workspaceId,
-          currentChannel.id,
-          content,
-          currentUser,
-        );
-        setMessages((prev) => [...prev, newMessage]);
+        await sendMessage({
+          workspaceId: workspaceId as Id<"workspaces">,
+          channelId: channelId as Id<"channels">,
+          body: content,
+        });
       } finally {
         setIsSending(false);
       }
     },
-    [workspaceId, currentChannel, currentUser, isSending],
+    [workspaceId, channelId, channel, currentUser, isSending, sendMessage],
   );
 
   // ─── Render ───────────────────────────────────────────
 
-  if (!currentUser || !currentChannel) {
+  if (currentUser === undefined || channel === undefined) {
     return (
       <div className={styles.loadingScreen}>
         <div className={styles.loadingSpinner} />
@@ -87,13 +68,47 @@ export default function ChatView({ workspaceId, channelId }: ChatViewProps) {
     );
   }
 
+  if (!currentUser || !channel) {
+    return (
+      <div className={styles.loadingScreen}>
+        <p className={styles.loadingText}>Channel not found or unauthorized.</p>
+      </div>
+    );
+  }
+
+  // Map Convex messages to Domain Models
+  const mappedMessages: Message[] = rawMessages.map((msg) => ({
+    id: msg._id,
+    channelId: msg.channelId,
+    workspaceId: msg.workspaceId,
+    author: {
+      id: msg.author?._id || 'unknown',
+      name: msg.author?.name || 'Anonymous',
+      displayName: msg.author?.name || 'Anonymous',
+      avatarUrl: msg.author?.image,
+      status: 'online' as const,
+    },
+    content: msg.body,
+    timestamp: new Date(msg._creationTime),
+    isEdited: !!msg.updatedAt,
+    reactions: [], // Not implemented in schema yet
+  })).reverse(); // Paginated query returns desc, we want asc for display
+
   return (
     <div className={styles.layout} style={{ gridTemplateColumns: '1fr' }}>
       <main className={styles.main}>
-        <ChatHeader channel={currentChannel} />
-        <MessageList messages={messages} isLoading={isLoading} />
+        <ChatHeader channel={{
+          id: channel._id,
+          workspaceId: channel.workspaceId,
+          name: channel.name,
+          description: channel.description,
+          isPrivate: channel.isPrivate,
+          memberCount: 0,
+          createdAt: new Date(channel.createdAt)
+        }} />
+        <MessageList messages={mappedMessages} isLoading={status === "LoadingFirstPage"} />
         <MessageInput
-          channelName={currentChannel.name}
+          channelName={channel.name}
           onSend={handleSendMessage}
           disabled={isSending}
         />

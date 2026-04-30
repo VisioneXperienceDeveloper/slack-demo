@@ -1,40 +1,33 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { UserButton, SignInButton } from '@clerk/nextjs';
 import { Authenticated, Unauthenticated, AuthLoading } from 'convex/react';
+import { useQuery } from 'convex/react';
+import { api } from '../../../../convex/_generated/api';
 import { WorkspaceOnboarding } from '@/features/workspace';
-import { chatService } from '@/features/chat';
-import type { Workspace } from '@/features/chat/domain/models';
 
 function AuthenticatedEntryPoint() {
-  const [workspaces, setWorkspaces] = useState<Workspace[] | null>(null);
+  const workspaces = useQuery(api.workspaces.list);
   const router = useRouter();
 
   useEffect(() => {
-    async function checkWorkspaces() {
-      try {
-        const userWorkspaces = await chatService.getWorkspaces();
-        if (userWorkspaces.length > 0) {
-          // Redirect to the first workspace
-          router.push(`/workspace/${userWorkspaces[0].id}`);
-        } else {
-          setWorkspaces([]); // Show onboarding
-        }
-      } catch (e) {
-        console.error(e);
-      }
+    if (workspaces && workspaces.length > 0) {
+      router.push(`/workspace/${workspaces[0]._id}`);
     }
-    checkWorkspaces();
-  }, [router]);
+  }, [workspaces, router]);
 
-  if (workspaces === null) {
+  if (workspaces === undefined) {
     return (
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', width: '100vw' }}>
         <div className="loading-spinner" />
       </div>
     );
+  }
+
+  if (workspaces.length > 0) {
+    return null; // Redirecting
   }
 
   // User has no workspaces, show onboarding

@@ -16,6 +16,8 @@ import styles from './MessageList.module.css';
 interface MessageListProps {
   messages: Message[];
   isLoading: boolean;
+  onReact?: (messageId: string, emoji: string) => void;
+  onThreadClick?: (messageId: string) => void;
 }
 
 /**
@@ -58,7 +60,7 @@ function computeDateDividers(messages: Message[]): Set<string> {
   return dividerIds;
 }
 
-export default function MessageList({ messages, isLoading }: MessageListProps) {
+export default function MessageList({ messages, isLoading, onReact, onThreadClick }: MessageListProps) {
   const bottomRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -100,7 +102,12 @@ export default function MessageList({ messages, isLoading }: MessageListProps) {
                   <span className={styles.dateLine} />
                 </div>
               )}
-              <MessageBubble message={message} isCompact={isCompact} />
+              <MessageBubble 
+                message={message} 
+                isCompact={isCompact} 
+                onReact={onReact}
+                onThreadClick={onThreadClick}
+              />
             </div>
           );
         })}

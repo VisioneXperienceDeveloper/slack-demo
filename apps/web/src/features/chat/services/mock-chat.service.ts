@@ -223,7 +223,7 @@ export class MockChatService implements ChatService {
     await this.delay(50);
 
     const newMessage: Message = {
-      id: `msg-${Date.now()}`,
+      id: `msg-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`,
       channelId,
       author,
       content,

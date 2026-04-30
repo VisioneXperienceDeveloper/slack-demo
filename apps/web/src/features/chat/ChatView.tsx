@@ -23,6 +23,7 @@ export default function ChatView() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isSending, setIsSending] = useState(false);
 
   // ─── Initial Data Load ────────────────────────────────
 
@@ -68,16 +69,21 @@ export default function ChatView() {
 
   const handleSendMessage = useCallback(
     async (content: string) => {
-      if (!currentChannel || !currentUser) return;
+      if (!currentChannel || !currentUser || isSending) return;
 
-      const newMessage = await chatService.sendMessage(
-        currentChannel.id,
-        content,
-        currentUser,
-      );
-      setMessages((prev) => [...prev, newMessage]);
+      setIsSending(true);
+      try {
+        const newMessage = await chatService.sendMessage(
+          currentChannel.id,
+          content,
+          currentUser,
+        );
+        setMessages((prev) => [...prev, newMessage]);
+      } finally {
+        setIsSending(false);
+      }
     },
-    [currentChannel, currentUser],
+    [currentChannel, currentUser, isSending],
   );
 
   // ─── Render ───────────────────────────────────────────
@@ -106,6 +112,7 @@ export default function ChatView() {
           <MessageInput
             channelName={currentChannel.name}
             onSend={handleSendMessage}
+            disabled={isSending}
           />
         )}
       </main>

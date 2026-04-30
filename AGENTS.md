@@ -14,6 +14,7 @@ Convex agent skills for common tasks can be installed by running `npx convex ai-
   - `hotfix/*`: Branch for emergency bug fixes.
 - **Continuous Integration (CI)**:
   - All Pull Requests to the `main` branch must pass automated tests, linting, and build checks before they can be merged.
+  - **MANDATORY**: AI assistants must run `npm run lint`, `npm run test`, and `npm run build` locally before pushing to any branch or creating a PR.
 - **Continuous Deployment (CD)**:
   - Deployment should only occur automatically upon successful merge/push to the `main` branch.
 

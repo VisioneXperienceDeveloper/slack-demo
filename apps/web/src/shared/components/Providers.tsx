@@ -5,6 +5,13 @@ import { ClerkProvider, useAuth } from '@clerk/nextjs';
 import { ConvexAuthProvider } from '@slack-clone/auth';
 import { dark } from '@clerk/themes';
 
+import { useAuthUser } from '../hooks/use-auth-user';
+
+function UserSync({ children }: { children: ReactNode }) {
+  useAuthUser();
+  return <>{children}</>;
+}
+
 export function Providers({ children }: { children: ReactNode }) {
   return (
     <ClerkProvider
@@ -31,7 +38,9 @@ export function Providers({ children }: { children: ReactNode }) {
         convexUrl={process.env.NEXT_PUBLIC_CONVEX_URL!} 
         useAuth={useAuth}
       >
-        {children}
+        <UserSync>
+          {children}
+        </UserSync>
       </ConvexAuthProvider>
     </ClerkProvider>
   );

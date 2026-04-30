@@ -1,0 +1,64 @@
+/* Avatar — Shared Component Styles */
+
+.avatar {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-lg);
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+  font-weight: 600;
+  user-select: none;
+}
+
+/* Sizes */
+.sm .inner {
+  width: 24px;
+  height: 24px;
+  font-size: var(--text-xs);
+  border-radius: var(--radius-sm);
+}
+
+.md .inner {
+  width: 36px;
+  height: 36px;
+  font-size: var(--text-sm);
+}
+
+.lg .inner {
+  width: 48px;
+  height: 48px;
+  font-size: var(--text-lg);
+}
+
+.initials {
+  line-height: 1;
+  letter-spacing: 0.02em;
+}
+
+/* Status indicator */
+.status {
+  position: absolute;
+  bottom: -1px;
+  right: -1px;
+  width: 10px;
+  height: 10px;
+  border-radius: var(--radius-full);
+  border: 2px solid var(--bg-primary);
+}
+
+.sm .status {
+  width: 8px;
+  height: 8px;
+}
+
+.lg .status {
+  width: 12px;
+  height: 12px;
+}

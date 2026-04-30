@@ -1,0 +1,182 @@
+/* MessageBubble — Styles */
+
+.message {
+  display: flex;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-5);
+  position: relative;
+  transition: background var(--transition-fast);
+}
+
+.message:hover {
+  background: var(--accent-subtle);
+}
+
+/* Compact mode (consecutive messages from same author) */
+.compact {
+  padding-top: 1px;
+  padding-bottom: 1px;
+}
+
+/* ─── Avatar Column ─── */
+
+.avatarCol {
+  flex-shrink: 0;
+  width: 36px;
+  padding-top: 2px;
+}
+
+.timestampCol {
+  flex-shrink: 0;
+  width: 36px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 2px;
+}
+
+.hoverTime {
+  font-size: 10px;
+  color: var(--text-quaternary);
+  opacity: 0;
+  transition: opacity var(--transition-fast);
+  white-space: nowrap;
+}
+
+.message:hover .hoverTime {
+  opacity: 1;
+}
+
+/* ─── Content ─── */
+
+.content {
+  flex: 1;
+  min-width: 0;
+}
+
+.meta {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
+  margin-bottom: 2px;
+}
+
+.authorName {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--text-primary);
+  letter-spacing: -0.01em;
+}
+
+.timestamp {
+  font-size: var(--text-xs);
+  color: var(--text-tertiary);
+}
+
+.edited {
+  font-size: var(--text-xs);
+  color: var(--text-quaternary);
+  font-style: italic;
+}
+
+.text {
+  font-size: var(--text-base);
+  color: var(--text-primary);
+  line-height: var(--leading-relaxed);
+  word-break: break-word;
+}
+
+/* ─── Reactions ─── */
+
+.reactions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+  margin-top: var(--space-2);
+}
+
+.reaction {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: 2px var(--space-2);
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border-default);
+  background: var(--accent-subtle);
+  font-size: var(--text-xs);
+  transition: all var(--transition-fast);
+  height: 24px;
+}
+
+.reaction:hover {
+  border-color: var(--border-strong);
+  background: var(--accent-muted);
+}
+
+.emoji {
+  font-size: 13px;
+  line-height: 1;
+}
+
+.reactionCount {
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+/* ─── Thread ─── */
+
+.thread {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  margin-top: var(--space-2);
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-md);
+  font-size: var(--text-xs);
+  color: var(--text-secondary);
+  transition: all var(--transition-fast);
+}
+
+.thread:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+/* ─── Hover Actions ─── */
+
+.hoverActions {
+  position: absolute;
+  top: -12px;
+  right: var(--space-5);
+  display: flex;
+  gap: 1px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  padding: 2px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--transition-fast);
+  box-shadow: var(--shadow-sm);
+}
+
+.message:hover .hoverActions {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.hoverBtn {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
+  transition: all var(--transition-fast);
+}
+
+.hoverBtn:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}

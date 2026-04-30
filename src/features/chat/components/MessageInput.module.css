@@ -1,0 +1,154 @@
+/* MessageInput — Styles */
+
+.wrapper {
+  padding: 0 var(--space-5) var(--space-4);
+  flex-shrink: 0;
+}
+
+.inputContainer {
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-lg);
+  background: var(--bg-input);
+  overflow: hidden;
+  transition: border-color var(--transition-fast);
+}
+
+.inputContainer:focus-within {
+  border-color: var(--border-focus);
+}
+
+/* ─── Toolbar ─── */
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: var(--space-1) var(--space-3);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.toolbarBtn {
+  width: 26px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  color: var(--text-tertiary);
+  font-size: var(--text-sm);
+  transition: all var(--transition-fast);
+}
+
+.toolbarBtn:hover {
+  background: var(--bg-hover);
+  color: var(--text-secondary);
+}
+
+.toolbarDivider {
+  width: 1px;
+  height: 16px;
+  background: var(--border-subtle);
+  margin: 0 var(--space-1);
+}
+
+/* ─── Textarea ─── */
+
+.textarea {
+  width: 100%;
+  padding: var(--space-3) var(--space-4);
+  font-size: var(--text-base);
+  line-height: var(--leading-relaxed);
+  color: var(--text-primary);
+  background: transparent;
+  border: none;
+  outline: none;
+  resize: none;
+  min-height: 24px;
+  max-height: 200px;
+}
+
+.textarea::placeholder {
+  color: var(--text-quaternary);
+}
+
+.textarea:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ─── Bottom Bar ─── */
+
+.bottomBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-1) var(--space-2) var(--space-1) var(--space-3);
+}
+
+.attachments {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.attachBtn {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  color: var(--text-tertiary);
+  transition: all var(--transition-fast);
+}
+
+.attachBtn:hover {
+  background: var(--bg-hover);
+  color: var(--text-secondary);
+}
+
+/* ─── Send Button ─── */
+
+.sendBtn {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-md);
+  color: var(--text-quaternary);
+  transition: all var(--transition-fast);
+}
+
+.sendBtn:disabled {
+  cursor: not-allowed;
+}
+
+.sendBtn.sendActive {
+  color: var(--text-inverse);
+  background: var(--accent);
+}
+
+.sendBtn.sendActive:hover {
+  background: var(--accent-hover);
+}
+
+/* ─── Hint ─── */
+
+.hint {
+  text-align: center;
+  font-size: 11px;
+  color: var(--text-quaternary);
+  margin-top: var(--space-2);
+  user-select: none;
+}
+
+.kbd {
+  font-family: var(--font-sans);
+  font-size: 10px;
+  padding: 1px 4px;
+  border-radius: 3px;
+  border: 1px solid var(--border-subtle);
+  background: var(--bg-elevated);
+  color: var(--text-tertiary);
+}

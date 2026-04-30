@@ -9,9 +9,11 @@
     "dev": "turbo dev",
     "build": "turbo build",
     "lint": "turbo lint",
+    "test": "turbo test",
     "clean": "turbo clean && rm -rf node_modules"
   },
   "devDependencies": {
+    "convex": "^1.19.2",
     "turbo": "^2"
   },
   "packageManager": "npm@10.9.2"

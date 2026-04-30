@@ -10,6 +10,7 @@ jobs:
   validate:
     name: Lint, Test, and Build
     runs-on: ubuntu-latest
+    environment: VXD
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -29,5 +30,21 @@ jobs:
       - name: Test
         run: npm run test
 
+      - name: Debug Environment Variables
+        run: |
+          echo "Checking environment variables presence..."
+          if [ -z "$CLERK_PUB_KEY" ]; then echo "❌ NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY is EMPTY"; else echo "✅ NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY is present"; fi
+          if [ -z "$CLERK_SEC_KEY" ]; then echo "❌ CLERK_SECRET_KEY is EMPTY"; else echo "✅ CLERK_SECRET_KEY is present"; fi
+          if [ -z "$CONVEX_URL" ]; then echo "❌ NEXT_PUBLIC_CONVEX_URL is EMPTY"; else echo "✅ NEXT_PUBLIC_CONVEX_URL is present"; fi
+        env:
+          CLERK_PUB_KEY: ${{ vars.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}
+          CLERK_SEC_KEY: ${{ secrets.CLERK_SECRET_KEY }}
+          CONVEX_URL: ${{ vars.NEXT_PUBLIC_CONVEX_URL }}
+
       - name: Build
         run: npm run build
+        env:
+          NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${{ vars.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}
+          CLERK_SECRET_KEY: ${{ secrets.CLERK_SECRET_KEY }}
+          NEXT_PUBLIC_CONVEX_URL: ${{ vars.NEXT_PUBLIC_CONVEX_URL }}
+          CLERK_JWT_ISSUER_DOMAIN: ${{ secrets.CLERK_JWT_ISSUER_DOMAIN }}

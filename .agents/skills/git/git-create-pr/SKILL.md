@@ -9,9 +9,9 @@ Use this skill to automate the process of sharing code and requesting reviews on
 
 ## Workflow
 
-1. **Verify Remote**:
-   - Ensure a remote named `origin` is configured.
-   - Run `git remote -v` to check the URL.
+1. **Verify Remote & Local Health**:
+   - Ensure a remote named `origin` is configured (`git remote -v`).
+   - **MANDATORY**: Run `npm run lint`, `npm run test`, and `npm run build` locally. Do NOT push if any step fails.
 
 2. **Push Branches**:
    - For each local feature branch, run `git push origin <branch-name>`.

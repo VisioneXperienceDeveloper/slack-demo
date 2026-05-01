@@ -8,6 +8,12 @@
   transition: background var(--transition-fast);
 }
 
+@media (max-width: 768px) {
+  .message {
+    padding: var(--space-1) var(--space-3);
+  }
+}
+
 .message:hover {
   background: var(--accent-subtle);
 }
@@ -159,6 +165,13 @@
   pointer-events: none;
   transition: opacity var(--transition-fast);
   box-shadow: var(--shadow-sm);
+  z-index: 10;
+}
+
+@media (max-width: 768px) {
+  .hoverActions {
+    right: var(--space-3);
+  }
 }
 
 .message:hover .hoverActions {

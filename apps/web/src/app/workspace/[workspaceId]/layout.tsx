@@ -1,27 +1,41 @@
-import { ReactNode } from 'react';
-import { SidebarContainer } from '@/features/chat';
-import { redirect } from 'next/navigation';
+'use client';
 
-export default async function WorkspaceLayout({
+import { ReactNode, use } from 'react';
+import { SidebarContainer } from '@/features/chat';
+import WorkspaceSwitcher from '@/features/chat/components/WorkspaceSwitcher';
+import GlobalHeader from '@/shared/components/GlobalHeader';
+import { useSidebar } from '@/shared/contexts/SidebarContext';
+import { usePresence } from '@/shared/hooks/usePresence';
+import styles from './layout.module.css';
+
+export default function WorkspaceLayout({
   children,
   params,
 }: {
   children: ReactNode;
   params: Promise<{ workspaceId: string }>;
 }) {
-  const resolvedParams = await params;
+  const resolvedParams = use(params);
+  const { isOpen, toggle } = useSidebar();
   
-  // Catch old mock IDs like "ws-1" or other invalid Convex IDs and redirect
-  if (resolvedParams.workspaceId.length < 10) {
-    redirect('/');
-  }
+  usePresence();
+
 
   return (
-    <div style={{ display: 'flex', height: '100vh', width: '100vw', overflow: 'hidden' }}>
-      <SidebarContainer workspaceId={resolvedParams.workspaceId} />
-      <main style={{ flex: 1, position: 'relative', minWidth: 0 }}>
-        {children}
-      </main>
+    <div className={`${styles.layout} ${isOpen ? styles.sidebarOpen : ''}`}>
+      <GlobalHeader />
+      <div className={styles.mainContainer}>
+        <div className={styles.switcherWrapper}>
+          <WorkspaceSwitcher />
+        </div>
+        <div className={styles.sidebarWrapper}>
+          <SidebarContainer workspaceId={resolvedParams.workspaceId} />
+        </div>
+        <main className={styles.content}>
+          {children}
+        </main>
+        <div className={styles.overlay} onClick={() => toggle()} />
+      </div>
     </div>
   );
 }

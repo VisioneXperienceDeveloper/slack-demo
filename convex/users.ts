@@ -51,3 +51,50 @@ export const viewer = query({
       .unique();
   },
 });
+
+export const list = query({
+  args: { workspaceId: v.id("workspaces") },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) return [];
+
+    const members = await ctx.db
+      .query("members")
+      .withIndex("by_workspaceId", (q) => q.eq("workspaceId", args.workspaceId))
+      .collect();
+
+    const users = [];
+    for (const member of members) {
+      const user = await ctx.db.get(member.userId);
+      if (user) users.push(user);
+    }
+
+    return users;
+  },
+});
+
+export const getById = query({
+  args: { userId: v.id("users") },
+  handler: async (ctx, args) => {
+    return await ctx.db.get(args.userId);
+  },
+});
+
+export const updatePresence = mutation({
+  args: {},
+  handler: async (ctx) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) return;
+
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_externalId", (q) => q.eq("externalId", identity.subject))
+      .unique();
+
+    if (user) {
+      await ctx.db.patch(user._id, {
+        lastSeen: Date.now(),
+      });
+    }
+  },
+});

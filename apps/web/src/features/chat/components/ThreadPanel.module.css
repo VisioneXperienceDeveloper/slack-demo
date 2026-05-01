@@ -6,6 +6,16 @@
   height: 100%;
 }
 
+@media (max-width: 1024px) {
+  .panel {
+    width: 100%;
+    border-left: none;
+    position: absolute;
+    inset: 0;
+    z-index: 100;
+  }
+}
+
 .header {
   height: 60px;
   min-height: 60px;

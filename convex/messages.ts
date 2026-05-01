@@ -146,3 +146,96 @@ export const listThread = query({
     };
   },
 });
+export const search = query({
+  args: {
+    workspaceId: v.id("workspaces"),
+    query: v.string(),
+    channelId: v.optional(v.id("channels")),
+  },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) return [];
+
+    const messages = await ctx.db
+      .query("messages")
+      .withSearchIndex("search_body", (q) => {
+        const search = q.search("body", args.query).eq("workspaceId", args.workspaceId);
+        return args.channelId ? search.eq("channelId", args.channelId) : search;
+      })
+      .take(10);
+
+
+    return await Promise.all(
+      messages.map(async (msg) => {
+        const author = await ctx.db.get(msg.authorId);
+        const channel = await ctx.db.get(msg.channelId);
+        return {
+          ...msg,
+          author,
+          channel,
+        };
+      })
+    );
+  },
+});
+
+export const getUrl = query({
+  args: { storageId: v.id("_storage") },
+  handler: async (ctx, args) => {
+    return await ctx.storage.getUrl(args.storageId);
+  },
+});
+
+export const update = mutation({
+  args: {
+    id: v.id("messages"),
+    body: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) throw new Error("Unauthorized");
+
+    const message = await ctx.db.get(args.id);
+    if (!message) throw new Error("Message not found");
+
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_externalId", (q) => q.eq("externalId", identity.subject))
+      .unique();
+
+    if (!user || user._id !== message.authorId) {
+      throw new Error("Unauthorized to edit this message");
+    }
+
+    await ctx.db.patch(args.id, {
+      body: args.body,
+      updatedAt: Date.now(),
+    });
+
+    return args.id;
+  },
+});
+
+export const remove = mutation({
+  args: { id: v.id("messages") },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) throw new Error("Unauthorized");
+
+    const message = await ctx.db.get(args.id);
+    if (!message) throw new Error("Message not found");
+
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_externalId", (q) => q.eq("externalId", identity.subject))
+      .unique();
+
+    if (!user || user._id !== message.authorId) {
+      throw new Error("Unauthorized to delete this message");
+    }
+
+    await ctx.db.delete(args.id);
+
+    return args.id;
+  },
+});

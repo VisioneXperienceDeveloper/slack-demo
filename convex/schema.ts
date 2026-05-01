@@ -7,6 +7,7 @@ export default defineSchema({
     image: v.optional(v.string()),
     externalId: v.string(), // Clerk's user ID
     email: v.string(),
+    lastSeen: v.optional(v.number()),
   }).index("by_externalId", ["externalId"]),
 
   workspaces: defineTable({
@@ -45,7 +46,11 @@ export default defineSchema({
   })
     .index("by_channelId", ["channelId"])
     .index("by_workspaceId", ["workspaceId"])
-    .index("by_parentMessageId", ["parentMessageId"]),
+    .index("by_parentMessageId", ["parentMessageId"])
+    .searchIndex("search_body", {
+      searchField: "body",
+      filterFields: ["workspaceId", "channelId"],
+    }),
 
   reactions: defineTable({
     messageId: v.id("messages"),
@@ -63,4 +68,13 @@ export default defineSchema({
   })
     .index("by_workspaceId", ["workspaceId"])
     .index("by_members", ["memberOneId", "memberTwoId"]),
+
+  channelMembers: defineTable({
+    channelId: v.id("channels"),
+    userId: v.id("users"),
+    role: v.union(v.literal("admin"), v.literal("member")),
+  })
+    .index("by_channelId", ["channelId"])
+    .index("by_userId", ["userId"])
+    .index("by_channelId_and_userId", ["channelId", "userId"]),
 });

@@ -8,17 +8,22 @@
 'use client';
 
 import { useState, useRef } from 'react';
-import type { Message } from '@/features/chat/domain/models';
+import type { Message, User } from '@/features/chat/domain/models';
 import Avatar from '@/shared/components/Avatar';
 import MarkdownText from '@/shared/components/MarkdownText';
 import EmojiPicker from './EmojiPicker';
+import MessageImage from './MessageImage';
+import MessageActionsMenu from './MessageActionsMenu';
 import styles from './MessageBubble.module.css';
 
 interface MessageBubbleProps {
   message: Message;
-  isCompact?: boolean; // Consecutive messages from same author
+  isCompact?: boolean;
   onReact?: (messageId: string, emoji: string) => void;
   onThreadClick?: (messageId: string) => void;
+  onEdit?: (messageId: string, body: string) => void;
+  onDelete?: (messageId: string) => void;
+  currentUser?: User;
 }
 
 function formatTime(date: Date): string {
@@ -45,10 +50,15 @@ export default function MessageBubble({
   message, 
   isCompact = false,
   onReact,
-  onThreadClick
+  onThreadClick,
+  onEdit,
+  onDelete,
+  currentUser,
 }: MessageBubbleProps) {
   const [pickerPosition, setPickerPosition] = useState<{ top: number; left: number } | null>(null);
+  const [menuPosition, setMenuPosition] = useState<{ top: number; left: number } | null>(null);
   const reactBtnRef = useRef<HTMLButtonElement>(null);
+  const moreBtnRef = useRef<HTMLButtonElement>(null);
 
   const handleReactClick = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -62,10 +72,24 @@ export default function MessageBubble({
     }
   };
 
+  const handleMoreClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (menuPosition) {
+      setMenuPosition(null);
+    } else {
+      const rect = moreBtnRef.current?.getBoundingClientRect();
+      if (rect) {
+        setMenuPosition({ top: rect.bottom + 4, left: rect.left - 130 });
+      }
+    }
+  };
+
   const handleEmojiSelect = (emoji: string) => {
     onReact?.(message.id, emoji);
     setPickerPosition(null);
   };
+
+  const isOwner = currentUser?.id === message.author.id;
 
   return (
     <div className={`${styles.message} ${isCompact ? styles.compact : ''}`}>
@@ -94,13 +118,17 @@ export default function MessageBubble({
 
         <MarkdownText text={message.content} />
 
+        {message.image && (
+          <MessageImage storageId={message.image} />
+        )}
+
         {/* Reactions */}
         {message.reactions.length > 0 && (
           <div className={styles.reactions}>
             {message.reactions.map((reaction, i) => (
               <button 
                 key={i} 
-                className={`${styles.reaction} ${reaction.userIds?.includes('current-user') ? styles.reactionActive : ''}`}
+                className={`${styles.reaction} ${reaction.userIds?.includes(currentUser?.id || '') ? styles.reactionActive : ''}`}
                 onClick={() => onReact?.(message.id, reaction.emoji)}
                 type="button"
               >
@@ -112,7 +140,7 @@ export default function MessageBubble({
         )}
 
         {/* Thread indicator */}
-        {message.threadCount && message.threadCount > 0 && (
+        {(message.threadCount ?? 0) > 0 && (
           <button className={styles.thread} onClick={() => onThreadClick?.(message.id)} type="button">
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
               <path
@@ -158,7 +186,13 @@ export default function MessageBubble({
             />
           </svg>
         </button>
-        <button className={styles.hoverBtn} title="More actions" type="button">
+        <button 
+          className={styles.hoverBtn} 
+          title="More actions" 
+          type="button"
+          onClick={handleMoreClick}
+          ref={moreBtnRef}
+        >
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
             <circle cx="3" cy="7" r="1" fill="currentColor" />
             <circle cx="7" cy="7" r="1" fill="currentColor" />
@@ -172,6 +206,26 @@ export default function MessageBubble({
           onSelect={handleEmojiSelect} 
           onClose={() => setPickerPosition(null)} 
           position={pickerPosition} 
+        />
+      )}
+
+      {menuPosition && (
+        <MessageActionsMenu
+          onClose={() => setMenuPosition(null)}
+          onEdit={() => {
+            onEdit?.(message.id, message.content);
+            setMenuPosition(null);
+          }}
+          onDelete={() => {
+            onDelete?.(message.id);
+            setMenuPosition(null);
+          }}
+          onCopyLink={() => {
+            navigator.clipboard.writeText(`${window.location.origin}${window.location.pathname}?messageId=${message.id}`);
+            setMenuPosition(null);
+          }}
+          position={menuPosition}
+          isOwner={isOwner}
         />
       )}
     </div>

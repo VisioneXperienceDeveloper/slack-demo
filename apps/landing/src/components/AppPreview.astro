@@ -1,0 +1,66 @@
+---
+import MockWorkspaceSwitcher from './mockup/MockWorkspaceSwitcher.astro';
+import MockSidebar from './mockup/MockSidebar.astro';
+import MockChatArea from './mockup/MockChatArea.astro';
+---
+
+<section class="app-preview container">
+  <div class="preview-frame glass animate-fade-in">
+    <div class="preview-body">
+      <MockWorkspaceSwitcher />
+      <MockSidebar />
+      <MockChatArea />
+    </div>
+  </div>
+  
+  <div class="preview-shadow"></div>
+</section>
+
+<style>
+  .app-preview {
+    margin-top: -40px;
+    padding-bottom: 120px;
+    position: relative;
+  }
+
+  .preview-frame {
+    height: 700px;
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 40px 100px rgba(0, 0, 0, 0.5);
+    position: relative;
+    z-index: 5;
+  }
+
+  .preview-body {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+  }
+
+  .preview-shadow {
+    position: absolute;
+    bottom: 80px;
+    left: 10%;
+    right: 10%;
+    height: 100px;
+    background: rgba(255, 255, 255, 0.1);
+    filter: blur(80px);
+    z-index: 1;
+    border-radius: 100%;
+  }
+
+  @media (max-width: 1024px) {
+    .preview-frame {
+      height: 500px;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .app-preview {
+      display: none; /* Hide complex mockup on small mobile */
+    }
+  }
+</style>

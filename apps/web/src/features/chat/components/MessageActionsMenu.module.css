@@ -1,0 +1,47 @@
+.menu {
+  position: fixed;
+  background-color: var(--bg-elevated);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-md);
+  padding: var(--space-1);
+  box-shadow: var(--shadow-lg);
+  z-index: 1001;
+  min-width: 160px;
+  animation: fadeIn 0.15s ease-out;
+}
+
+.item {
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  background: none;
+  border: none;
+  color: var(--text-primary);
+  font-size: 14px;
+  text-align: left;
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  transition: background-color var(--transition-fast);
+}
+
+.item:hover {
+  background-color: var(--bg-hover);
+}
+
+.divider {
+  height: 1px;
+  background-color: var(--border-subtle);
+  margin: var(--space-1) 0;
+}
+
+.danger {
+  color: var(--status-danger, #E01E5A);
+}
+
+.danger:hover {
+  background-color: rgba(224, 30, 90, 0.1);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}

@@ -5,6 +5,7 @@
 .paragraph {
   margin: 0;
   padding: 0;
+  white-space: pre-wrap;
 }
 
 .link {
@@ -39,4 +40,18 @@
   border: 1px solid var(--border-subtle, rgba(255, 255, 255, 0.1));
   overflow-x: auto;
   margin: 8px 0;
+}
+
+.mention {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--accent);
+  padding: 0 4px;
+  border-radius: 4px;
+  font-weight: 500;
+  cursor: pointer;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.mention:hover {
+  background: rgba(255, 255, 255, 0.15);
 }

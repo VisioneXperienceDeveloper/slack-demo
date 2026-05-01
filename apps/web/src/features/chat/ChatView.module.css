@@ -5,6 +5,22 @@
   height: 100%;
   width: 100%;
   overflow: hidden;
+  position: relative;
+}
+
+.layout.threadOpen {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+}
+
+@media (max-width: 1024px) {
+  .layout.threadOpen {
+    display: flex; /* Override grid on mobile */
+  }
+  
+  .layout.threadOpen .main {
+    display: none; /* Hide main chat when thread is open on small screens */
+  }
 }
 
 .main {

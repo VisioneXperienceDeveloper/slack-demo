@@ -6,9 +6,12 @@ import { ConvexAuthProvider } from '@slack-clone/auth';
 import { dark } from '@clerk/themes';
 
 import { useAuthUser } from '../hooks/use-auth-user';
+import { usePresence } from '../../hooks/usePresence';
+import { SidebarProvider } from '../contexts/SidebarContext';
 
 function UserSync({ children }: { children: ReactNode }) {
   useAuthUser();
+  usePresence();
   return <>{children}</>;
 }
 
@@ -38,9 +41,11 @@ export function Providers({ children }: { children: ReactNode }) {
         convexUrl={process.env.NEXT_PUBLIC_CONVEX_URL!} 
         useAuth={useAuth}
       >
-        <UserSync>
-          {children}
-        </UserSync>
+        <SidebarProvider>
+          <UserSync>
+            {children}
+          </UserSync>
+        </SidebarProvider>
       </ConvexAuthProvider>
     </ClerkProvider>
   );

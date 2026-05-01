@@ -64,6 +64,34 @@
   color: var(--text-primary);
 }
 
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.closeSidebarBtn {
+  display: none;
+  width: 28px;
+  height: 28px;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-md);
+  color: var(--text-tertiary);
+  transition: all var(--transition-fast);
+}
+
+.closeSidebarBtn:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+@media (max-width: 768px) {
+  .closeSidebarBtn {
+    display: flex;
+  }
+}
+
 /* ─── Navigation ─── */
 
 .nav {
@@ -99,6 +127,22 @@
   color: var(--text-primary);
 }
 
+.navButton.activeNav {
+  background: var(--bg-active);
+  color: var(--text-primary);
+}
+
+.workspaceTitleTruncated {
+  font-size: var(--text-md);
+  font-weight: 600;
+  color: var(--text-primary);
+  letter-spacing: -0.01em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 140px;
+}
+
 /* ─── Section ─── */
 
 .section {
@@ -110,21 +154,55 @@
 .sectionHeader {
   display: flex;
   align-items: center;
+  justify-content: space-between;
+  padding: var(--space-1) var(--space-2) var(--space-1) var(--space-4);
+  width: 100%;
+}
+
+.sectionToggle {
+  display: flex;
+  align-items: center;
   gap: var(--space-1);
-  padding: var(--space-1) var(--space-4);
   font-size: var(--text-sm);
   color: var(--text-secondary);
   font-weight: 500;
-  width: 100%;
   transition: color var(--transition-fast);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  flex: 1;
+  text-align: left;
 }
 
-.sectionHeader:hover {
+.sectionToggle:hover {
+  color: var(--text-primary);
+}
+
+.addBtn {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-md);
+  color: var(--text-tertiary);
+  transition: all var(--transition-fast);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.addBtn:hover {
+  background: var(--bg-hover);
   color: var(--text-primary);
 }
 
 .chevron {
   transition: transform var(--transition-fast);
+}
+
+.chevronClosed {
+  transform: rotate(-90deg);
 }
 
 /* ─── Channel List ─── */
@@ -157,7 +235,7 @@
   color: var(--text-primary);
 }
 
-.hash {
+.hash, .lockIcon {
   font-size: var(--text-base);
   color: var(--text-tertiary);
   font-weight: 400;
@@ -168,6 +246,31 @@
 
 .channelItem.active .hash {
   color: var(--text-secondary);
+}
+
+.dmAvatar {
+  position: relative;
+  width: 20px;
+  height: 20px;
+  background: var(--bg-elevated);
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  flex-shrink: 0;
+}
+
+.dmStatusDot {
+  position: absolute;
+  bottom: -2px;
+  right: -2px;
+  width: 8px;
+  height: 8px;
+  border-radius: var(--radius-full);
+  border: 2px solid var(--bg-secondary);
 }
 
 .channelName {
@@ -188,6 +291,20 @@
   display: flex;
   align-items: center;
   gap: var(--space-3);
+  width: 100%;
+}
+
+.userSectionBtn {
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  padding: var(--space-1);
+  border-radius: var(--radius-md);
+  transition: background var(--transition-fast);
+}
+
+.userSectionBtn:hover {
+  background: var(--bg-hover);
 }
 
 .userAvatar {

@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import { useQuery } from 'convex/react';
 import { api } from '@convex/_generated/api';
@@ -18,8 +19,27 @@ export default function SidebarContainer({ workspaceId }: SidebarContainerProps)
   
   const params = useParams();
   const currentChannelId = params.channelId as string;
+  const [now, setNow] = useState(0);
+  const [isMounted, setIsMounted] = useState(false);
+  
+  useEffect(() => {
+    // Making state updates asynchronous to avoid cascading render lint errors
+    const timeout = setTimeout(() => {
+      setIsMounted(true);
+      setNow(Date.now());
+    }, 0);
+    
+    const interval = setInterval(() => {
+      setNow(Date.now());
+    }, 30000); // Update every 30 seconds
+    
+    return () => {
+      clearTimeout(timeout);
+      clearInterval(interval);
+    };
+  }, []);
 
-  if (workspace === undefined || currentUser === undefined || channels === undefined || conversations === undefined) {
+  if (!isMounted || workspace === undefined || currentUser === undefined || channels === undefined || conversations === undefined) {
     return (
       <aside style={{ width: 'var(--sidebar-width)', backgroundColor: 'var(--bg-secondary)', borderRight: '1px solid var(--border-subtle)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <div className="loading-spinner" />
@@ -35,7 +55,6 @@ export default function SidebarContainer({ workspaceId }: SidebarContainerProps)
     );
   }
 
-  // Map Convex data to Domain Models
   const mappedWorkspace = {
     id: workspace._id,
     name: workspace.name,
@@ -44,12 +63,16 @@ export default function SidebarContainer({ workspaceId }: SidebarContainerProps)
     createdAt: new Date(workspace.createdAt),
   };
 
+  const ONLINE_THRESHOLD = 120000; // 2 minutes
+
   const mappedCurrentUser = {
     id: currentUser._id,
     name: currentUser.name || 'Anonymous',
     displayName: currentUser.name || 'Anonymous',
     avatarUrl: currentUser.image,
-    status: 'online' as const,
+    status: (currentUser.lastSeen && now - currentUser.lastSeen < ONLINE_THRESHOLD) 
+      ? 'online' as const 
+      : 'offline' as const,
   };
 
   const mappedChannels = (channels || []).map(ch => ({
@@ -58,7 +81,7 @@ export default function SidebarContainer({ workspaceId }: SidebarContainerProps)
     name: ch.name,
     description: ch.description,
     isPrivate: ch.isPrivate,
-    memberCount: 0, // Not available in basic table yet
+    memberCount: 0,
     createdAt: new Date(ch.createdAt),
   }));
 
@@ -73,7 +96,9 @@ export default function SidebarContainer({ workspaceId }: SidebarContainerProps)
       name: conv.otherUser.name || 'Anonymous',
       displayName: conv.otherUser.name || 'Anonymous',
       avatarUrl: conv.otherUser.image,
-      status: 'online' as const,
+      status: (conv.otherUser.lastSeen && now - conv.otherUser.lastSeen < ONLINE_THRESHOLD)
+        ? 'online' as const
+        : 'offline' as const,
     } : undefined,
   })) || [];
 

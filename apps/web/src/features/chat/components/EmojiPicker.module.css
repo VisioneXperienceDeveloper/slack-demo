@@ -1,34 +1,51 @@
 .picker {
-  background-color: var(--bg-primary, #1A1D21);
-  border: 1px solid var(--border-subtle, rgba(255, 255, 255, 0.1));
-  border-radius: 8px;
-  padding: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  background-color: var(--bg-elevated);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-lg);
+  padding: var(--space-1);
+  box-shadow: var(--shadow-lg);
   z-index: 1000;
   animation: fadeIn 0.15s ease-out;
 }
 
-.grid {
+.quickGrid {
   display: flex;
+  align-items: center;
   gap: 4px;
 }
 
-.emojiBtn {
+.emojiBtn, .moreBtn {
   background: none;
   border: none;
-  font-size: 20px;
-  padding: 6px;
+  font-size: 18px;
+  width: 32px;
+  height: 32px;
   cursor: pointer;
-  border-radius: 4px;
-  transition: background-color 0.1s ease, transform 0.1s ease;
+  border-radius: var(--radius-sm);
+  transition: all var(--transition-fast);
   display: flex;
   align-items: center;
   justify-content: center;
+  color: var(--text-primary);
 }
 
-.emojiBtn:hover {
-  background-color: var(--bg-tertiary, rgba(255, 255, 255, 0.1));
+.emojiBtn:hover, .moreBtn:hover {
+  background-color: var(--bg-hover);
   transform: scale(1.1);
+}
+
+.moreBtn {
+  color: var(--text-tertiary);
+  border-left: 1px solid var(--border-subtle);
+  margin-left: 2px;
+  padding-left: 4px;
+  width: 28px;
+}
+
+.fullPickerContainer {
+  margin-top: var(--space-2);
+  border-top: 1px solid var(--border-subtle);
+  padding-top: var(--space-2);
 }
 
 @keyframes fadeIn {

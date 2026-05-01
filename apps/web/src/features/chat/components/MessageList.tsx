@@ -9,7 +9,7 @@
 'use client';
 
 import { useEffect, useRef, useMemo } from 'react';
-import type { Message } from '@/features/chat/domain/models';
+import type { Message, User } from '@/features/chat/domain/models';
 import MessageBubble from './MessageBubble';
 import styles from './MessageList.module.css';
 
@@ -18,6 +18,9 @@ interface MessageListProps {
   isLoading: boolean;
   onReact?: (messageId: string, emoji: string) => void;
   onThreadClick?: (messageId: string) => void;
+  onEdit?: (messageId: string, body: string) => void;
+  onDelete?: (messageId: string) => void;
+  currentUser?: User;
 }
 
 /**
@@ -60,7 +63,15 @@ function computeDateDividers(messages: Message[]): Set<string> {
   return dividerIds;
 }
 
-export default function MessageList({ messages, isLoading, onReact, onThreadClick }: MessageListProps) {
+export default function MessageList({ 
+  messages, 
+  isLoading, 
+  onReact, 
+  onThreadClick,
+  onEdit,
+  onDelete,
+  currentUser 
+}: MessageListProps) {
   const bottomRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -107,6 +118,9 @@ export default function MessageList({ messages, isLoading, onReact, onThreadClic
                 isCompact={isCompact} 
                 onReact={onReact}
                 onThreadClick={onThreadClick}
+                onEdit={onEdit}
+                onDelete={onDelete}
+                currentUser={currentUser}
               />
             </div>
           );

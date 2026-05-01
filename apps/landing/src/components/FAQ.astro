@@ -1,0 +1,74 @@
+---
+const faqs = [
+  {
+    q: "Is Slack Clone free to use?",
+    a: "Yes! We offer a generous free tier for small teams and side projects. You can upgrade to a paid plan as your team grows."
+  },
+  {
+    q: "Can I import my data from Slack?",
+    a: "Absolutely. We provide tools to import your channels, messages, and users directly from Slack with a single click."
+  },
+  {
+    q: "Is my data secure?",
+    a: "Security is our top priority. We use industry-standard encryption, SOC2 compliance patterns, and secure hosting with Convex."
+  },
+  {
+    q: "Does it support mobile devices?",
+    a: "Yes, our web application is fully responsive, and we also offer native desktop applications for macOS and Windows."
+  }
+];
+---
+
+<section id="faq" class="faq section-padding">
+  <div class="container">
+    <div class="section-header">
+      <h2 class="section-title">Frequently Asked Questions</h2>
+    </div>
+
+    <div class="faq-list">
+      {faqs.map((faq) => (
+        <div class="faq-item glass">
+          <h3 class="faq-question">{faq.q}</h3>
+          <p class="faq-answer">{faq.a}</p>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .faq-list {
+    max-width: 800px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .faq-item {
+    padding: 32px;
+    border-radius: var(--radius-xl);
+  }
+
+  .faq-question {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 12px;
+  }
+
+  .faq-answer {
+    color: var(--text-secondary);
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  .section-header {
+    text-align: center;
+    margin-bottom: 64px;
+  }
+
+  .section-title {
+    font-size: 32px;
+    font-weight: 800;
+  }
+</style>

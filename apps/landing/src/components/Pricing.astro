@@ -1,0 +1,179 @@
+---
+const tiers = [
+  {
+    name: "Free",
+    price: "$0",
+    description: "Perfect for side projects and small teams.",
+    features: ["90 days of message history", "10 integrations", "1:1 video calls", "Basic security"],
+    button: "Get Started",
+    popular: false
+  },
+  {
+    name: "Pro",
+    price: "$12",
+    description: "Advanced features for growing businesses.",
+    features: ["Unlimited message history", "Unlimited integrations", "Group video calls", "Custom sections"],
+    button: "Try for Free",
+    popular: true
+  },
+  {
+    name: "Enterprise",
+    price: "Custom",
+    description: "Built for large scale organizations.",
+    features: ["HIPAA compliance", "Audit logs", "SAML SSO", "Dedicated support"],
+    button: "Contact Sales",
+    popular: false
+  }
+];
+---
+
+<section id="pricing" class="pricing section-padding">
+  <div class="container">
+    <div class="section-header">
+      <h2 class="section-title">Simple, transparent pricing</h2>
+      <p class="section-description">Choose the plan that's right for your team.</p>
+    </div>
+
+    <div class="pricing-grid">
+      {tiers.map((tier) => (
+        <div class={`pricing-card glass ${tier.popular ? 'popular' : ''}`}>
+          {tier.popular && <div class="popular-badge">Most Popular</div>}
+          <div class="card-header">
+            <h3 class="tier-name">{tier.name}</h3>
+            <div class="price-box">
+              <span class="price">{tier.price}</span>
+              {tier.price !== 'Custom' && <span class="period">/mo</span>}
+            </div>
+            <p class="tier-desc">{tier.description}</p>
+          </div>
+          <ul class="feature-list">
+            {tier.features.map((f) => (
+              <li>
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M11.5 3.5L5.5 10L2.5 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                {f}
+              </li>
+            ))}
+          </ul>
+          <button class={`btn ${tier.popular ? 'btn-primary' : 'btn-secondary'}`}>{tier.button}</button>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .pricing {
+    background: #0D0D0D;
+  }
+
+  .section-header {
+    text-align: center;
+    margin-bottom: 64px;
+  }
+
+  .section-title {
+    font-size: 36px;
+    font-weight: 800;
+    margin-bottom: 16px;
+  }
+
+  .section-description {
+    color: var(--text-secondary);
+    font-size: 18px;
+  }
+
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 32px;
+  }
+
+  .pricing-card {
+    padding: 40px;
+    border-radius: var(--radius-2xl);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    transition: transform var(--transition-base);
+  }
+
+  .pricing-card:hover {
+    transform: translateY(-8px);
+  }
+
+  .pricing-card.popular {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.15);
+  }
+
+  .popular-badge {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    color: black;
+    padding: 4px 12px;
+    border-radius: 99px;
+    font-size: 12px;
+    font-weight: 700;
+  }
+
+  .tier-name {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 16px;
+  }
+
+  .price-box {
+    margin-bottom: 16px;
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+  }
+
+  .price {
+    font-size: 44px;
+    font-weight: 800;
+  }
+
+  .period {
+    color: var(--text-secondary);
+    font-size: 16px;
+  }
+
+  .tier-desc {
+    color: var(--text-secondary);
+    font-size: 14px;
+    line-height: 1.5;
+    margin-bottom: 32px;
+    min-height: 42px;
+  }
+
+  .feature-list {
+    list-style: none;
+    margin-bottom: 40px;
+    flex: 1;
+  }
+
+  .feature-list li {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin-bottom: 16px;
+  }
+
+  .feature-list svg {
+    color: var(--accent);
+  }
+
+  @media (max-width: 1024px) {
+    .pricing-grid {
+      grid-template-columns: 1fr;
+      max-width: 500px;
+      margin: 0 auto;
+    }
+  }
+</style>

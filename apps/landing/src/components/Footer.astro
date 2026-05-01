@@ -1,0 +1,151 @@
+---
+const currentYear = new Date().getFullYear();
+---
+<footer class="footer">
+  <div class="container footer-content">
+    <div class="footer-brand">
+      <div class="logo">
+        <div class="logo-icon">S</div>
+        <span class="logo-text">Slack Clone</span>
+      </div>
+      <p class="brand-desc">Building the future of team communication.</p>
+    </div>
+
+    <div class="footer-grid">
+      <div class="footer-column">
+        <h4>Product</h4>
+        <a href="#features">Features</a>
+        <a href="#pricing">Pricing</a>
+        <a href="https://app.slackclone.com/changelog">Changelog</a>
+      </div>
+      <div class="footer-column">
+        <h4>Resources</h4>
+        <a href="https://docs.slackclone.com">Documentation</a>
+        <a href="https://app.slackclone.com/api">API Reference</a>
+        <a href="https://app.slackclone.com/status">Status</a>
+      </div>
+      <div class="footer-column">
+        <h4>Company</h4>
+        <a href="/about">About</a>
+        <a href="/blog">Blog</a>
+        <a href="/careers">Careers</a>
+      </div>
+    </div>
+  </div>
+  
+  <div class="container footer-bottom">
+    <p>&copy; {currentYear} Slack Clone Inc. All rights reserved.</p>
+    <div class="footer-legal">
+      <a href="/privacy">Privacy</a>
+      <a href="/terms">Terms</a>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    border-top: 1px solid var(--border-subtle);
+    padding: 80px 0 40px;
+    background: #050505;
+  }
+
+  .footer-content {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 64px;
+    gap: 64px;
+  }
+
+  .footer-brand {
+    max-width: 300px;
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+
+  .logo-icon {
+    width: 28px;
+    height: 28px;
+    background: white;
+    color: black;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+  }
+
+  .logo-text {
+    font-weight: 700;
+    font-size: 18px;
+  }
+
+  .brand-desc {
+    color: var(--text-secondary);
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  .footer-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 48px;
+  }
+
+  .footer-column h4 {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    color: var(--text-primary);
+  }
+
+  .footer-column a {
+    display: block;
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin-bottom: 12px;
+    transition: color var(--transition-base);
+  }
+
+  .footer-column a:hover {
+    color: var(--text-primary);
+  }
+
+  .footer-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 40px;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    color: var(--text-tertiary);
+    font-size: 13px;
+  }
+
+  .footer-legal {
+    display: flex;
+    gap: 24px;
+  }
+
+  .footer-legal a:hover {
+    color: var(--text-secondary);
+  }
+
+  @media (max-width: 768px) {
+    .footer-content {
+      flex-direction: column;
+      gap: 48px;
+    }
+    .footer-grid {
+      gap: 32px;
+    }
+    .footer-bottom {
+      flex-direction: column;
+      gap: 20px;
+      text-align: center;
+    }
+  }
+</style>

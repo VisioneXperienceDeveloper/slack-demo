@@ -1,5 +1,5 @@
 ---
-name: git-create-pr
+name: gpr
 description: Pushes local branches to the remote repository and creates Pull Requests on GitHub using appropriate titles and descriptions.
 ---
 

@@ -46,6 +46,10 @@ Maintain a technical, concise, and professional tone. Focus on "Why" and "How" r
 - **Convex Modules**: Always use the `@convex/` path alias (e.g., `import { api } from '@convex/_generated/api'`).
 - **NEVER** use deeply nested relative paths for core modules.
 
+### 3. State Hydration
+- **isMounted Pattern**: To avoid hydration mismatch errors in Next.js (especially when using client-only data like `Date.now()` or window sizes), use an `isMounted` state inside a `useEffect`.
+- **suppressHydrationWarning**: Use this property on the `<html>` or `<body>` tags if third-party scripts (like Clerk or extensions) modify the DOM.
+
 ## 🚀 Checklist for New Features
 - [ ] Create/Update the feature document in `docs/features/`.
 - [ ] Update `database_schema.md` if new tables/indexes were added.

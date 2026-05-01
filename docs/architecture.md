@@ -7,7 +7,10 @@ The project has evolved into a **Turborepo monorepo**, separating the applicatio
 ```text
 .
 ├── apps/
-│   └── web/            # Next.js 16 Web Application
+│   ├── web/            # Next.js 16 Main Web Application (Chat & Workspaces)
+│   ├── landing/        # Astro 5.0 Marketing & Landing Page
+│   ├── mobile/         # Expo (React Native) Mobile Application
+│   └── desktop/        # Electron Desktop Application (Wrapper for Web)
 ├── convex/             # Backend logic (Schema, Mutations, Queries)
 ├── packages/
 │   └── auth/           # Shared Authentication logic (Clerk + Convex)
@@ -29,7 +32,12 @@ The project has evolved into a **Turborepo monorepo**, separating the applicatio
 - **Schema-driven**: Defined in `convex/schema.ts`.
 - **Serverless**: Business logic resides in query and mutation functions.
 
-### 3. Authentication (`packages/auth`)
+### 3. Shared Foundation (`shared/`)
+- **Components**: Generic UI elements (Avatar, Button, Input).
+- **Contexts**: Global state providers like `SidebarContext` for responsive layout management.
+- **Hooks**: Shared logic for hydration handling (`isMounted` pattern) and real-time updates.
+
+### 4. Authentication (`packages/auth`)
 - Integrates **Clerk** for user identity and **Convex Auth** for database authorization.
 - Provides a unified `AuthProvider` used by the web app.
 

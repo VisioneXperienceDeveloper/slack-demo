@@ -5,6 +5,7 @@ Welcome to the official documentation for the Slack Clone project. This project 
 ## Documentation Index
 
 ### 🚀 Getting Started
+- [Project Status](./project_status.md): Current implementation and roadmap.
 - [Tech Stack](./tech_stack.md): Overview of the technologies and tools used.
 - [Architecture](./architecture.md): Deep dive into the monorepo structure and patterns.
 - [Roadmap](./roadmap.md): Current progress and future goals.

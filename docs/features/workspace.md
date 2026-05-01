@@ -1,30 +1,32 @@
 # Workspace Feature
 
-The Workspace feature manages the high-level organization of the application, including onboarding, switching between workspaces, and member management.
+The Workspace feature manages the high-level organization, including onboarding, switching between workspaces, and administrative tasks.
 
 ## Components
 
-- **WorkspaceOnboarding**: A guided flow for users to create their first workspace or join an existing one using a `joinCode`.
-- **WorkspaceSidebar**: (Planned/Implementation) Navigation for channels and direct messages within a specific workspace.
-- **WorkspaceSwitcher**: UI for users to jump between different workspaces they belong to.
+- **Sidebar**: The main navigation hub for channels, DMs, and workspace settings. 
+  - **Responsive**: Controlled by `SidebarContext`, it automatically collapses on route changes in mobile views to improve usability.
+- **WorkspaceSwitcher**: Allows users to seamlessly jump between different workspaces.
+- **WorkspaceOnboarding**: Guided flow for creating or joining a workspace.
+- **MembersModal**: Management UI for inviting members and managing roles.
+- **ChannelSettingsModal**: Interface for editing channel metadata or deleting channels.
+- **ProfileModal**: User profile management and status updates.
 
-## Backend Integration (`convex/workspaces.ts`)
+## Advanced Management
 
-- **Queries**: 
-  - `workspaces.get`: Fetches information for a single workspace.
-  - `workspaces.getForUser`: Returns all workspaces the current user is a member of.
-- **Mutations**:
-  - `workspaces.create`: Initializes a new workspace and sets the creator as the "owner".
-  - `workspaces.join`: Validates a `joinCode` and adds the user as a "member".
+### 1. Presence System
+- Real-time "Online/Offline" status based on the `lastSeen` field in the `users` table.
+- Status is updated periodically while the user is active in the application.
 
-## Member Roles
+### 2. Member Management
+- Roles: `owner`, `admin`, `member`.
+- Invite system: Uses `joinCode` for controlled workspace entry.
 
-The workspace feature supports granular permissions through the `members` table:
-- **Owner**: Full control over settings and deletion.
-- **Admin**: Can manage channels and invite members.
-- **Member**: Can participate in conversations and view workspace data.
+### 3. Navigation (Sidebar)
+- Organized by Categories: Channels, Direct Messages, and Threads.
+- Dynamic Badge updates for unread messages or mentions.
 
-## Implementation Details
+## Backend Integration (`convex/workspaces.ts`, `convex/users.ts`)
 
-- **Dynamic Routing**: Uses Next.js dynamic routes (`/workspace/[workspaceId]`) to scope data fetching to the active workspace.
-- **Onboarding Guard**: High-level application logic redirects users to the onboarding flow if they don't have an active workspace.
+- **Context-Aware Fetching**: Queries are scoped to the active `workspaceId`.
+- **Authorization**: Role-based access control (RBAC) enforced on mutations like channel creation or workspace settings updates.

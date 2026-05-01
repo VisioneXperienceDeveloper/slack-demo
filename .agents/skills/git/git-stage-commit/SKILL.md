@@ -1,5 +1,5 @@
 ---
-name: git-stage-commit
+name: gc
 description: Groups local changes into logical slices, creates feature branches, and commits them step-by-step to maintain a clean history.
 ---
 

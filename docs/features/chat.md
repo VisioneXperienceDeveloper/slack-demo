@@ -1,34 +1,42 @@
 # Chat Feature
 
-The Chat feature provides a high-fidelity, real-time messaging experience using Convex's reactive engine.
+The Chat feature provides a high-fidelity, real-time messaging experience with support for advanced Slack-like features.
 
 ## Components
 
-- **ChatView**: The main orchestrator. It manages:
-  - Channel metadata fetching via `api.channels.get`.
-  - Paginated message fetching via `usePaginatedQuery`.
-  - Message submission via `useMutation`.
-- **MessageList**: A real-time updating list of messages. Uses Convex `useQuery` for automatic synchronization.
-- **MessageBubble**: Renders individual messages with support for avatars, author names, timestamps, and thread indicators.
-- **MessageInput**: A sophisticated input component for composing and sending messages via Convex mutations.
+- **ChatView**: The main orchestrator for channel-based messaging.
+- **MessageList**: Renders the stream of messages with infinite scroll support.
+- **MessageBubble**: Renders individual messages with rich metadata (author, timestamp, reactions, images).
+- **MessageInput**: A rich-text input area with support for:
+  - **Emoji Picker**: Quick access to common emojis.
+  - **Image Uploads**: Integration with Convex storage for attachments.
+- **ThreadPanel**: A side panel for managing nested message replies (Threading).
+- **EmojiPicker**: A dedicated UI for adding reactions to messages.
+- **MessageActionsMenu**: Context menu for editing, deleting, or replying to messages.
 
-## Backend Logic (`convex/messages.ts`)
+## Advanced Features
 
-### `list` (Query)
-- Implements **Pagination** to handle large chat histories.
-- **Data Joining**: Automatically resolves `authorId` to a full `user` object before returning to the client.
-- **Ordering**: Returns messages in descending order (newest first) for efficient pagination, which the client then reverses for display.
+### 1. Threading
+- Messages can have replies, creating a nested conversation structure.
+- Implementation uses `parentMessageId` in the `messages` table.
+- Accessible via the `ThreadPanel` side panel.
 
-### `send` (Mutation)
-- **Authorization**: Validates that the user is a member of the workspace before allowing the message to be saved.
-- **Persistence**: Saves the message to the `messages` table and triggers a real-time update for all subscribers.
+### 2. Reactions
+- Real-time emoji reactions to any message.
+- Multiple users can react with the same emoji (counts are aggregated in the UI).
+
+### 3. File & Image Support
+- Direct image uploads via the message input.
+- Images are stored in Convex `_storage` and rendered using the `MessageImage` component.
+
+### 4. Direct Messages (DMs)
+- 1:1 private conversations between workspace members.
+- Managed via the `conversations` table and specialized DM channels.
+
+## Backend Integration (`convex/messages.ts`, `convex/reactions.ts`, `convex/conversations.ts`)
+
+- **Search**: Implemented via `search_body` index for fast message retrieval.
+- **Joins**: Author and reaction data are resolved server-side for optimal client performance.
 
 ## Real-time Sync
-
-1. **State Consistency**: Convex ensures that all clients see the same state of the database.
-2. **Subscriptions**: The `useQuery` and `usePaginatedQuery` hooks automatically subscribe to data changes.
-3. **Atomic Updates**: Mutations are transactional, ensuring no partial data is written.
-
-## Performance
-- **Indexed Access**: Messages are always filtered by `channelId` using a dedicated index.
-- **Efficient Joins**: Author data is fetched in parallel using `Promise.all` in the query handler.
+- Uses Convex's subscription engine for instant updates on new messages, reactions, and thread replies.

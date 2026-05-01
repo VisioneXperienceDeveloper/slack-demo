@@ -13,7 +13,18 @@ This project is built as a high-performance, real-time monorepo using industry-s
 ## Frontend Stack (`apps/web`)
 - **React**: 19.x (Experimental/Next.js 16)
 - **Styling**: Vanilla CSS Modules (Linear-inspired design system)
-- **Components**: Shared UI components in `src/shared/components`
+
+## Landing Stack (`apps/landing`)
+- **Framework**: [Astro 5.0](https://astro.build/) (Optimized for content-heavy marketing pages)
+- **Styling**: Vanilla CSS
+
+## Mobile Stack (`apps/mobile`)
+- **Framework**: [Expo](https://expo.dev/) (React Native)
+- **Components**: Native-first UI using `react-native` and `lucide-react-native`.
+
+## Desktop Stack (`apps/desktop`)
+- **Framework**: [Electron](https://www.electronjs.org/)
+- **Nature**: Desktop wrapper for the `@slack-clone/web` application.
 
 ## Backend Stack (`convex/`)
 - **Database**: Convex (NoSQL, transactional, real-time)

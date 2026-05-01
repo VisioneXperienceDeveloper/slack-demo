@@ -38,3 +38,5 @@ Convex agent skills for common tasks can be installed by running `npx convex ai-
 - **@add-docs**: Analyzes the project and updates `/docs` according to the standards. Located in `.agents/skills/docs/add-docs`.
 - **@gc**: Groups changes and commits them step-by-step to separate branches. Located in `.agents/skills/git/git-stage-commit`.
 - **@gpr**: Pushes branches and creates Pull Requests on GitHub. Located in `.agents/skills/git/git-create-pr`.
+- **@gmain**: Syncs the local repository by pulling the latest remote main and deleting all other local feature branches to maintain a clean workspace. Located in `.agents/skills/git/git-sync-main`.
+- **@ci**: Runs the mandatory continuous integration checks (lint, test, build) locally to ensure code quality before pushing. Located in `.agents/skills/ci`.

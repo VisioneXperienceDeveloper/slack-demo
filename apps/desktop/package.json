@@ -10,11 +10,26 @@
     "lint": "eslint ."
   },
   "dependencies": {
-    "7zip-bin": "^5.2.0",
     "electron-is-dev": "^2.0.0"
   },
   "devDependencies": {
     "electron": "31.7.7",
-    "electron-builder": "^24.13.3"
+    "electron-builder": "^24.13.3",
+    "7zip-bin": "^5.2.0"
+  },
+  "build": {
+    "appId": "com.slack-clone.desktop",
+    "productName": "Slack Clone",
+    "directories": {
+      "output": "dist"
+    },
+    "linux": {
+      "target": [
+        "AppImage",
+        "deb"
+      ]
+    },
+    "npmRebuild": false,
+    "asar": true
   }
 }

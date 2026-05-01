@@ -1,0 +1,266 @@
+---
+const channels = ['general', 'product-updates', 'engineering', 'design'];
+const dms = [
+  { name: 'Sarah Chen', initial: 'S' },
+  { name: 'Alex Rivera', initial: 'A' },
+];
+---
+<aside class="mock-sidebar">
+  <div class="workspace-header">
+    <div class="workspace-name">
+      <span class="workspace-icon">D</span>
+      <h1 class="workspace-title">Design Team</h1>
+    </div>
+    <div class="compose-btn">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+        <path d="M13.5 3.5L12.5 2.5L5 10V11H6L13.5 3.5Z" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" />
+        <path d="M2.5 13.5H13.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" />
+      </svg>
+    </div>
+  </div>
+
+  <nav class="nav">
+    <div class="nav-button active">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 4H14M2 8H14M2 12H8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+      <span>Threads</span>
+    </div>
+    <div class="nav-button">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="5.5" stroke="currentColor" stroke-width="1.2" /><path d="M8 5V8L10 10" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" /></svg>
+      <span>Activity</span>
+    </div>
+  </nav>
+
+  <div class="scrollable">
+    <div class="section">
+      <div class="section-header">
+        <svg width="10" height="10" viewBox="0 0 10 10" fill="none" class="chevron"><path d="M3 4L5 6L7 4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" /></svg>
+        <span>Channels</span>
+      </div>
+      <ul class="channel-list">
+        {channels.map((ch) => (
+          <li class={`channel-item ${ch === 'general' ? 'active' : ''}`}>
+            <span class="hash">#</span>
+            <span class="channel-name">{ch}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+
+    <div class="section">
+      <div class="section-header">
+        <svg width="10" height="10" viewBox="0 0 10 10" fill="none" class="chevron"><path d="M3 4L5 6L7 4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" /></svg>
+        <span>Direct Messages</span>
+      </div>
+      <ul class="channel-list">
+        {dms.map((dm) => (
+          <li class="channel-item">
+            <span class="dm-avatar">{dm.initial}</span>
+            <span class="channel-name">{dm.name}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </div>
+
+  <div class="user-section">
+    <div class="user-info">
+      <div class="user-avatar">
+        <span class="user-initial">J</span>
+        <span class="user-status"></span>
+      </div>
+      <div class="user-meta">
+        <span class="user-name">JungWoo Choi</span>
+        <span class="user-status-text">Active</span>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<style>
+  .mock-sidebar {
+    width: var(--sidebar-width);
+    height: 100%;
+    background: var(--bg-secondary);
+    border-right: 1px solid var(--border-subtle);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .workspace-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 var(--space-4);
+    height: var(--header-height);
+    border-bottom: 1px solid var(--border-subtle);
+  }
+
+  .workspace-name {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+  }
+
+  .workspace-icon {
+    width: 26px;
+    height: 26px;
+    background: var(--accent);
+    color: var(--text-inverse);
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 700;
+  }
+
+  .workspace-title {
+    font-size: 15px;
+    font-weight: 600;
+  }
+
+  .compose-btn {
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-secondary);
+  }
+
+  .nav {
+    padding: var(--space-2);
+    border-bottom: 1px solid var(--border-subtle);
+  }
+
+  .nav-button {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-1) var(--space-2);
+    border-radius: var(--radius-md);
+    font-size: 13px;
+    color: var(--text-secondary);
+    height: 30px;
+  }
+
+  .nav-button.active {
+    background: var(--bg-active);
+    color: var(--text-primary);
+  }
+
+  .scrollable {
+    flex: 1;
+    overflow-y: auto;
+  }
+
+  .section {
+    padding: var(--space-2) 0;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+    padding: var(--space-1) var(--space-4);
+    font-size: 13px;
+    color: var(--text-secondary);
+    font-weight: 500;
+  }
+
+  .channel-list {
+    margin-top: 4px;
+    padding: 0 8px;
+    list-style: none;
+  }
+
+  .channel-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 8px;
+    border-radius: var(--radius-md);
+    font-size: 13px;
+    color: var(--text-secondary);
+    height: 30px;
+  }
+
+  .channel-item.active {
+    background: var(--bg-active);
+    color: var(--text-primary);
+  }
+
+  .hash {
+    font-size: 14px;
+    color: var(--text-tertiary);
+    width: 16px;
+    text-align: center;
+  }
+
+  .dm-avatar {
+    width: 16px;
+    height: 16px;
+    background: var(--bg-elevated);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+  }
+
+  .user-section {
+    padding: var(--space-3) var(--space-4);
+    border-top: 1px solid var(--border-subtle);
+    background: var(--bg-secondary);
+  }
+
+  .user-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .user-avatar {
+    position: relative;
+    width: 32px;
+    height: 32px;
+    border-radius: var(--radius-lg);
+    background: var(--bg-elevated);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .user-initial {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-secondary);
+  }
+
+  .user-status {
+    position: absolute;
+    bottom: -1px;
+    right: -1px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    border: 2px solid var(--bg-secondary);
+    background: var(--status-online, #3ECF71);
+  }
+
+  .user-meta {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .user-name {
+    font-size: 13px;
+    font-weight: 500;
+  }
+
+  .user-status-text {
+    font-size: 11px;
+    color: var(--text-tertiary);
+  }
+</style>

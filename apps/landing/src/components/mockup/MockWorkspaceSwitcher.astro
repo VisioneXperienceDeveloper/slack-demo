@@ -1,0 +1,69 @@
+---
+const workspaces = [
+  { id: '1', name: 'Design Team', initial: 'D' },
+  { id: '2', name: 'Tech Support', initial: 'T' },
+];
+---
+<div class="mock-switcher">
+  {workspaces.map((ws) => (
+    <div class={`workspace-btn ${ws.id === '1' ? 'active' : ''}`} title={ws.name}>
+      {ws.initial}
+    </div>
+  ))}
+  
+  <div class="add-btn">
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+      <path d="M10 5V15M5 10H15" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+    </svg>
+  </div>
+</div>
+
+<style>
+  .mock-switcher {
+    width: 64px;
+    height: 100%;
+    background: var(--bg-primary);
+    border-right: 1px solid var(--border-subtle);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 12px;
+    gap: 12px;
+    flex-shrink: 0;
+  }
+
+  .workspace-btn {
+    width: 44px;
+    height: 44px;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text-secondary);
+    cursor: default;
+    transition: all var(--transition-fast);
+  }
+
+  .workspace-btn.active {
+    background: var(--accent);
+    color: var(--text-inverse);
+    border-radius: var(--radius-md);
+  }
+
+  .add-btn {
+    width: 44px;
+    height: 44px;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-full);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-tertiary);
+    cursor: default;
+  }
+</style>

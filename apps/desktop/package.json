@@ -2,7 +2,11 @@
   "name": "desktop",
   "version": "0.1.0",
   "description": "Slack Clone Desktop Application",
-  "author": "VisioneXperienceDeveloper",
+  "author": {
+    "name": "VisioneXperienceDeveloper",
+    "email": "visionexperiencedeveloper@gmail.com"
+  },
+  "homepage": "https://github.com/VisioneXperienceDeveloper/slack-demo",
   "main": "main.js",
   "scripts": {
     "dev": "electron .",
